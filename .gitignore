@@ -1,2 +1,9 @@
 .DS_Store
 Session.vim
+.env
+.env.*
+!.env.example
+node_modules/
+_site/
+backups/
+exports/

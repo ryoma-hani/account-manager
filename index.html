@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#12685c" />
+    <meta
+      name="description"
+      content="サービスの登録情報とパスワードの保管場所をまとめる、個人用アカウント台帳。"
+    />
+    <title>アカウント台帳</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/vue@3.5.44/dist/vue.global.prod.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/vue3-sfc-loader@0.9.5/dist/vue3-sfc-loader.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"
+    ></script>
+    <script type="module" src="./js/app.js"></script>
+  </head>
+  <body>
+    <div id="boot-status" class="boot-status" role="status">
+      アカウント台帳を読み込んでいます…
+    </div>
+    <noscript>このアプリを使うにはJavaScriptを有効にしてください。</noscript>
+    <div id="app" v-cloak>
+      <app-notice
+        v-if="notice"
+        :message="notice.message"
+        :kind="notice.kind"
+        @close="notice = null"
+      ></app-notice>
+      <div v-if="booting" class="boot-status" role="status">
+        ログイン状態を確認しています…
+      </div>
+      <login-panel
+        v-else-if="!session && !isDemo"
+        :busy="authBusy"
+        :error="authError"
+        @login="login"
+        @demo="startDemo"
+      ></login-panel>
+      <div v-else class="app-shell">
+        <aside class="sidebar" aria-label="メインメニュー">
+          <a class="brand" href="./" @click.prevent="view = 'home'">
+            <span class="brand-mark"
+              ><app-icon name="book" :size="23"></app-icon
+            ></span>
+            <span
+              >アカウント台帳<span class="brand-caption"
+                >ACCOUNT LEDGER</span
+              ></span
+            >
+          </a>
+          <span class="sidebar-label">ワークスペース</span>
+          <nav class="main-nav" aria-label="画面切替">
+            <button
+              :class="{ active: view === 'home' }"
+              :aria-current="view === 'home' ? 'page' : null"
+              @click="view = 'home'"
+            >
+              <app-icon name="grid"></app-icon><span>アカウント一覧</span
+              ><span class="nav-count">{{ accounts.length }}</span>
+            </button>
+            <button
+              :class="{ active: view === 'settings' }"
+              :aria-current="view === 'settings' ? 'page' : null"
+              @click="view = 'settings'"
+            >
+              <app-icon name="settings"></app-icon><span>設定</span>
+            </button>
+          </nav>
+          <div class="sidebar-note">
+            <app-icon name="shield" :size="19"></app-icon>
+            <p>
+              パスワードはいつもの保管場所に。<br />ここには、探すための情報を。
+            </p>
+          </div>
+          <div class="profile-area">
+            <span class="avatar">{{ isDemo ? 'S' : userInitial }}</span>
+            <div class="profile-copy">
+              <strong
+                >{{ isDemo ? 'サンプルユーザー' : 'マイアカウント' }}</strong
+              ><span :title="session?.user.email"
+                >{{ isDemo ? 'サンプルを体験中' : session?.user.email }}</span
+              >
+            </div>
+            <button
+              class="icon-button"
+              :disabled="authBusy || saving"
+              :aria-label="isDemo ? 'サンプルを終了' : 'ログアウト'"
+              :title="isDemo ? 'サンプルを終了' : 'ログアウト'"
+              @click="logout"
+            >
+              <app-icon name="logout" :size="18"></app-icon>
+            </button>
+          </div>
+        </aside>
+        <main class="main-content" id="main-content">
+          <div v-if="isDemo" class="demo-banner">
+            <span
+              ><strong>サンプルモード</strong>
+              架空のデータです。変更内容は再読み込みでリセットされます。</span
+            ><button @click="logout">
+              終了<app-icon name="close" :size="15"></app-icon>
+            </button>
+          </div>
+          <home-page
+            v-show="view === 'home'"
+            :accounts="accounts"
+            :options="options"
+            :loading="loading"
+            :load-error="loadError"
+            :saving="saving"
+            @create="openEditor()"
+            @edit="openEditor"
+            @delete="deleteTarget = $event"
+            @review="markReviewed"
+            @retry="loadAccounts"
+            @copy="copyText"
+          ></home-page>
+          <settings-page
+            v-show="view === 'settings'"
+            :options="options"
+            :accounts="accounts"
+            :loading="loading"
+            :saving="saving"
+            :load-error="loadError"
+            :save-error="settingsError"
+            :email="isDemo ? 'sample@example.com' : session?.user.email"
+            :is-demo="isDemo"
+            @save="saveSettings"
+            @retry="loadAccounts"
+          ></settings-page>
+          <footer class="app-footer">
+            <span>アカウント台帳</span
+            ><span>登録情報をまとめて、日々の見直しを少し身近に。</span>
+          </footer>
+        </main>
+        <account-editor
+          v-if="editorOpen"
+          :account="editingAccount"
+          :options="options"
+          :saving="saving"
+          :error="formError"
+          @close="closeEditor"
+          @save="saveAccount"
+        ></account-editor>
+        <confirm-dialog
+          v-if="deleteTarget"
+          title="アカウントを削除"
+          :message="'「' + deleteTarget.service_name + '」を台帳から削除します。サービス自体のアカウントは解約・削除されません。'"
+          :busy="saving"
+          :error="deleteError"
+          @cancel="closeDelete"
+          @confirm="deleteAccount"
+        ></confirm-dialog>
+      </div>
+    </div>
+  </body>
+</html>
