@@ -46,6 +46,7 @@ try {
       session: null,
       isDemo: false,
       view: 'home',
+      sidebarOpen: true,
       accounts: [],
       options: freshOptions(),
       loading: false,

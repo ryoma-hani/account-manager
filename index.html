@@ -33,6 +33,7 @@
     <div id="app" v-cloak>
       <app-notice
         v-if="notice"
+        :class="{ 'toast-centered': !sidebarOpen }"
         :message="notice.message"
         :kind="notice.kind"
         @close="notice = null"
@@ -47,8 +48,13 @@
         @login="login"
         @demo="startDemo"
       ></login-panel>
-      <div v-else class="app-shell">
-        <aside class="sidebar" aria-label="メインメニュー">
+      <div v-else class="app-shell" :class="{ 'sidebar-closed': !sidebarOpen }">
+        <aside
+          v-show="sidebarOpen"
+          id="workspace-menu"
+          class="sidebar"
+          aria-label="メインメニュー"
+        >
           <a class="brand" href="./" @click.prevent="view = 'home'">
             <span class="brand-mark"
               ><app-icon name="book" :size="23"></app-icon
@@ -104,6 +110,23 @@
           </div>
         </aside>
         <main class="main-content" id="main-content">
+          <div class="workspace-toolbar">
+            <button
+              type="button"
+              class="menu-toggle"
+              :aria-expanded="sidebarOpen"
+              aria-controls="workspace-menu"
+              @click="sidebarOpen = !sidebarOpen"
+            >
+              <app-icon
+                :name="sidebarOpen ? 'panel-close' : 'menu'"
+                :size="18"
+              ></app-icon>
+              <span
+                >{{ sidebarOpen ? 'メニューを閉じる' : 'メニューを開く' }}</span
+              >
+            </button>
+          </div>
           <div v-if="isDemo" class="demo-banner">
             <span
               ><strong>サンプルモード</strong>

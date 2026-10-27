@@ -224,6 +224,27 @@ h2 {
 .app-shell {
   min-height: 100vh;
 }
+.sidebar-closed .main-content {
+  margin-left: 0;
+}
+.workspace-toolbar {
+  margin-bottom: 20px;
+}
+.menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #dce5df;
+  border-radius: 8px;
+  color: var(--green);
+  background: var(--surface);
+  font-size: 12px;
+}
+.menu-toggle:hover {
+  background: var(--green-pale);
+}
 .sidebar {
   position: fixed;
   inset: 0 auto 0 0;
@@ -1026,6 +1047,9 @@ h2 {
 .toast-error {
   border-color: #edcecb;
   color: var(--red);
+}
+.toast.toast-centered {
+  left: 50%;
 }
 .toast .icon-button {
   margin-left: 8px;
