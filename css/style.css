@@ -411,6 +411,13 @@ h2 {
 .add-button {
   margin-top: 9px;
 }
+.ledger-page .add-button {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+.ledger-page .add-button:hover:not(:disabled) {
+  background: #1d4ed8;
+}
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
