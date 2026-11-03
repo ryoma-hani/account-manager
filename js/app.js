@@ -52,6 +52,9 @@ try {
       loading: false,
       saving: false,
       authBusy: false,
+      passwordSaving: false,
+      passwordError: '',
+      passwordChanged: 0,
       authError: '',
       loadError: '',
       formError: '',
@@ -105,6 +108,7 @@ try {
         this.loading = false;
         this.loadError = '';
         this.settingsError = '';
+        this.passwordError = '';
         this.formError = '';
         this.deleteError = '';
         this.editorOpen = false;
@@ -130,7 +134,7 @@ try {
         this.booting = false;
       },
       async logout() {
-        if (this.saving) return;
+        if (this.saving || this.passwordSaving) return;
         this.authBusy = true;
         try {
           if (!this.isDemo) await auth.signOut();
@@ -290,6 +294,20 @@ try {
             this.settingsError = errorMessage(error);
         } finally {
           this.saving = false;
+        }
+      },
+      async changePassword({ currentPassword, password }) {
+        if (this.isDemo || this.passwordSaving) return;
+        this.passwordSaving = true;
+        this.passwordError = '';
+        try {
+          await auth.updatePassword(currentPassword, password);
+          this.passwordChanged += 1;
+          this.notify('ログインパスワードを変更しました。');
+        } catch (error) {
+          this.passwordError = errorMessage(error);
+        } finally {
+          this.passwordSaving = false;
         }
       },
       async copyText(value) {

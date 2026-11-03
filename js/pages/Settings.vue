@@ -78,6 +78,61 @@
           ><span>変更後は「変更を保存」を押してください。</span>
         </div>
       </section>
+      <section class="settings-panel">
+        <h2>ログインパスワード</h2>
+        <p class="subtle">
+          このアプリにログインするためのパスワードを変更します。台帳に登録した各サービスのパスワードには影響しません。
+        </p>
+        <p v-if="isDemo" class="settings-help">
+          サンプルモードではパスワードを変更できません。ログイン後にご利用ください。
+        </p>
+        <form v-else class="password-change-form" @submit.prevent="changePassword">
+          <label class="option-field" for="current-login-password">
+            <span>現在のパスワード</span>
+            <small>本人確認のため入力してください。</small>
+            <input
+              id="current-login-password"
+              v-model="currentPassword"
+              type="password"
+              autocomplete="current-password"
+              required
+              :disabled="passwordSaving"
+            />
+          </label>
+          <label class="option-field" for="new-login-password">
+            <span>新しいパスワード</span>
+            <small>8文字以上で入力してください。</small>
+            <input
+              id="new-login-password"
+              v-model="newPassword"
+              type="password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+              :disabled="passwordSaving"
+            />
+          </label>
+          <label class="option-field" for="confirm-login-password">
+            <span>新しいパスワード（確認）</span>
+            <small>確認のため、もう一度入力してください。</small>
+            <input
+              id="confirm-login-password"
+              v-model="confirmPassword"
+              type="password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+              :disabled="passwordSaving"
+            />
+          </label>
+          <p v-if="passwordError || passwordValidation" class="form-error" role="alert">
+            {{ passwordError || passwordValidation }}
+          </p>
+          <button class="button button-primary" type="submit" :disabled="passwordSaving">
+            {{ passwordSaving ? '変更しています…' : 'パスワードを変更' }}
+          </button>
+        </form>
+      </section>
       <section class="settings-panel review-guide">
         <span class="summary-icon sand"
           ><app-icon name="clock" :size="22"
@@ -114,10 +169,21 @@ export default {
     saveError: String,
     email: String,
     isDemo: Boolean,
+    passwordSaving: Boolean,
+    passwordError: String,
+    passwordChanged: Number,
   },
-  emits: ['save', 'retry'],
+  emits: ['save', 'retry', 'change-password'],
   data() {
-    return { optionFields, draft: this.toDraft(this.options), validation: '' };
+    return {
+      optionFields,
+      draft: this.toDraft(this.options),
+      validation: '',
+      newPassword: '',
+      confirmPassword: '',
+      passwordValidation: '',
+      currentPassword: '',
+    };
   },
   computed: {
     dirty() {
@@ -128,6 +194,12 @@ export default {
     },
   },
   watch: {
+    passwordChanged() {
+      this.newPassword = '';
+      this.confirmPassword = '';
+      this.currentPassword = '';
+      this.passwordValidation = '';
+    },
     options: {
       deep: true,
       handler(value) {
@@ -155,6 +227,22 @@ export default {
     resetDefaults() {
       this.draft = this.toDraft(freshOptions());
       this.validation = '';
+    },
+    changePassword() {
+      this.passwordValidation = '';
+      if (this.passwordSaving) return;
+      if (this.newPassword.length < 8) {
+        this.passwordValidation = 'パスワードは8文字以上で入力してください。';
+        return;
+      }
+      if (this.newPassword !== this.confirmPassword) {
+        this.passwordValidation = '確認用のパスワードが一致しません。';
+        return;
+      }
+      this.$emit('change-password', {
+        currentPassword: this.currentPassword,
+        password: this.newPassword,
+      });
     },
     save() {
       if (this.saving) return;

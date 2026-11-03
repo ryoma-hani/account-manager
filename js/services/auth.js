@@ -17,6 +17,14 @@ export async function signIn(email, password) {
   return data.session;
 }
 
+export async function updatePassword(currentPassword, password) {
+  const { error } = await supabase.auth.updateUser({
+    current_password: currentPassword,
+    password,
+  });
+  if (error) throw error;
+}
+
 export async function signOut() {
   const { error } = await supabase.auth.signOut({ scope: 'local' });
   if (error) throw error;

@@ -1484,6 +1484,26 @@ dialog::backdrop {
   color: #a5afa7;
   margin: -5px 0 27px;
 }
+.password-change-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+.password-change-form input {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 5px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  font: inherit;
+}
+.password-change-form .form-error,
+.password-change-form button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
 .options-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2076,9 +2096,19 @@ dialog::backdrop {
   .settings-panel {
     padding: 20px 17px;
   }
+  .password-change-form input {
+    font-size: 16px;
+  }
   .options-grid {
     grid-template-columns: 1fr;
     gap: 23px;
+  }
+  .password-change-form {
+    grid-template-columns: 1fr;
+  }
+  .password-change-form .form-error,
+  .password-change-form button {
+    grid-column: auto;
   }
   .settings-panel-title {
     flex-wrap: wrap;

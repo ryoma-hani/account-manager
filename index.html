@@ -100,7 +100,7 @@
             </div>
             <button
               class="icon-button"
-              :disabled="authBusy || saving"
+              :disabled="authBusy || saving || passwordSaving"
               :aria-label="isDemo ? 'サンプルを終了' : 'ログアウト'"
               :title="isDemo ? 'サンプルを終了' : 'ログアウト'"
               @click="logout"
@@ -159,7 +159,11 @@
             :save-error="settingsError"
             :email="isDemo ? 'sample@example.com' : session?.user.email"
             :is-demo="isDemo"
+            :password-saving="passwordSaving"
+            :password-error="passwordError"
+            :password-changed="passwordChanged"
             @save="saveSettings"
+            @change-password="changePassword"
             @retry="loadAccounts"
           ></settings-page>
           <footer class="app-footer">
