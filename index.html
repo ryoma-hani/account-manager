@@ -171,9 +171,17 @@
             ><span>登録情報をまとめて、日々の見直しを少し身近に。</span>
           </footer>
         </main>
+        <site-picker
+          v-if="sitePickerOpen"
+          :sites="siteCatalog"
+          @close="closeSitePicker"
+          @select="openEditorForSite"
+          @manual="openEditorManually"
+        ></site-picker>
         <account-editor
           v-if="editorOpen"
           :account="editingAccount"
+          :initial-values="editorInitialValues"
           :options="options"
           :saving="saving"
           :error="formError"

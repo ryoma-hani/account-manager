@@ -209,6 +209,7 @@ export default {
   components: { AppIcon },
   props: {
     account: Object,
+    initialValues: Object,
     options: { type: Object, required: true },
     saving: Boolean,
     error: String,
@@ -219,6 +220,7 @@ export default {
       form: {
         ...blankAccount(),
         ...(this.account ?? {}),
+        ...(this.initialValues ?? {}),
         last_reviewed_on: this.account?.last_reviewed_on ?? '',
       },
       validation: '',

@@ -17,6 +17,7 @@ try {
     ledger,
     { freshOptions },
     { demoAccounts },
+    { popularSites },
   ] = await Promise.all([
     import('./sfc-loader.js'),
     import('./services/auth.js'),
@@ -25,6 +26,7 @@ try {
     import('./utils/ledger.js'),
     import('./config/options.js'),
     import('./services/demo.js'),
+    import('./config/site-catalog.js'),
   ]);
   const { createApp, defineAsyncComponent } = window.Vue;
   const component = (path) => defineAsyncComponent(() => loadSfc(path));
@@ -39,6 +41,7 @@ try {
       AppNotice: component('js/components/AppNotice.vue'),
       AppIcon: component('js/components/AppIcon.vue'),
       AccountEditor: component('js/components/AccountEditor.vue'),
+      SitePicker: component('js/components/SitePicker.vue'),
       ConfirmDialog: component('js/components/ConfirmDialog.vue'),
     },
     data: () => ({
@@ -49,6 +52,7 @@ try {
       sidebarOpen: true,
       accounts: [],
       options: freshOptions(),
+      siteCatalog: popularSites,
       loading: false,
       saving: false,
       authBusy: false,
@@ -62,6 +66,8 @@ try {
       deleteError: '',
       notice: null,
       editorOpen: false,
+      editorInitialValues: null,
+      sitePickerOpen: false,
       editingAccount: null,
       deleteTarget: null,
     }),
@@ -112,6 +118,8 @@ try {
         this.formError = '';
         this.deleteError = '';
         this.editorOpen = false;
+        this.editorInitialValues = null;
+        this.sitePickerOpen = false;
         this.editingAccount = null;
         this.deleteTarget = null;
         this.notice = null;
@@ -173,13 +181,39 @@ try {
       },
       openEditor(account = null) {
         if (this.loading || this.loadError || this.saving) return;
+        if (!account) {
+          this.sitePickerOpen = true;
+          return;
+        }
+        this.sitePickerOpen = false;
+        this.editorInitialValues = null;
         this.editingAccount = account;
         this.formError = '';
         this.editorOpen = true;
       },
+      openEditorForSite(site) {
+        this.sitePickerOpen = false;
+        this.editingAccount = null;
+        this.editorInitialValues = {
+          service_name: site.name,
+          login_url: site.url,
+        };
+        this.formError = '';
+        this.editorOpen = true;
+      },
+      openEditorManually(serviceName = '') {
+        this.openEditorForSite({
+          name: serviceName,
+          url: '',
+        });
+      },
+      closeSitePicker() {
+        this.sitePickerOpen = false;
+      },
       closeEditor() {
         if (!this.saving) {
           this.editorOpen = false;
+          this.editorInitialValues = null;
           this.editingAccount = null;
         }
       },
@@ -210,6 +244,7 @@ try {
             ...this.accounts.filter((item) => item.id !== account.id),
           ];
           this.editorOpen = false;
+          this.editorInitialValues = null;
           this.editingAccount = null;
           this.notify(
             values.id
