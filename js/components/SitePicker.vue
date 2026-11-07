@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     logoUrl(site) {
-      return `https://cdn.jsdelivr.net/npm/simple-icons@16.36.0/icons/${encodeURIComponent(site.logo)}.svg`;
+      return `https://cdn.simpleicons.org/${encodeURIComponent(site.logo)}`;
     },
     hideLogo(name) {
       if (!this.failedLogos.includes(name)) this.failedLogos.push(name);
