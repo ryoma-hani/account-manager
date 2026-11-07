@@ -1376,6 +1376,12 @@ dialog::backdrop {
   font-size: 15px;
   font-weight: 700;
 }
+.site-picker-mark img {
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
 .site-picker-copy {
   flex: 1;
   min-width: 0;

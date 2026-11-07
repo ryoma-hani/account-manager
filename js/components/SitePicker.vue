@@ -37,7 +37,18 @@
         type="button"
         @click="$emit('select', site)"
       >
-        <span class="site-picker-mark" aria-hidden="true">{{ site.name[0] }}</span>
+        <span class="site-picker-mark" aria-hidden="true">
+          <img
+            v-if="site.logo && !failedLogos.includes(site.name)"
+            :src="logoUrl(site)"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            referrerpolicy="no-referrer"
+            @error="hideLogo(site.name)"
+          />
+          <span v-else>{{ site.name[0] }}</span>
+        </span>
         <span class="site-picker-copy">
           <strong>{{ site.name }}</strong>
           <small>{{ site.host }}</small>
@@ -63,7 +74,7 @@ export default {
   props: { sites: { type: Array, required: true } },
   emits: ['close', 'select', 'manual'],
   data() {
-    return { query: '' };
+    return { query: '', failedLogos: [] };
   },
   computed: {
     sitesWithHosts() {
@@ -90,6 +101,12 @@ export default {
     this.$refs.dialog?.close();
   },
   methods: {
+    logoUrl(site) {
+      return `https://cdn.jsdelivr.net/npm/simple-icons@16.36.0/icons/${encodeURIComponent(site.logo)}.svg`;
+    },
+    hideLogo(name) {
+      if (!this.failedLogos.includes(name)) this.failedLogos.push(name);
+    },
     normalize(value) {
       return value.normalize('NFKC').toLocaleLowerCase();
     },
