@@ -39,11 +39,14 @@
       >
         <span
           class="site-picker-mark"
-          :class="{ 'site-picker-mark-google': site.logo === 'google' }"
+          :class="{
+            'site-picker-mark-google': site.logo === 'google',
+            'site-picker-mark-amazon': site.name === 'Amazon',
+          }"
           aria-hidden="true"
         >
           <img
-            v-if="site.logo && !failedLogos.includes(site.name)"
+            v-if="(site.logo || site.name === 'Amazon') && !failedLogos.includes(site.name)"
             :src="logoUrl(site)"
             alt=""
             loading="lazy"
@@ -108,6 +111,7 @@ export default {
     logoUrl(site) {
       if (site.logo === 'google')
         return 'https://developers.google.com/static/identity/images/g-logo.png';
+      if (site.name === 'Amazon') return 'https://www.amazon.co.jp/favicon.ico';
       return `https://cdn.simpleicons.org/${encodeURIComponent(site.logo)}`;
     },
     hideLogo(name) {
