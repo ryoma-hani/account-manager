@@ -80,7 +80,7 @@
           <app-icon name="search" :size="18" /><input
             v-model="filters.search"
             aria-label="アカウントを検索"
-            placeholder="サービス名、ID、保管場所で検索"
+            placeholder="サービス名、ID、URL、保管場所で検索"
           /><button
             v-if="filters.search"
             class="icon-button"
@@ -185,10 +185,11 @@
               <tr>
                 <th scope="col">サービス</th>
                 <th scope="col">ログインID</th>
+                <th scope="col">ログインURL</th>
                 <th scope="col">パスワードの保管場所</th>
                 <th scope="col">2段階認証</th>
                 <th scope="col">状態</th>
-                <th scope="col">点検状況</th>
+                <th scope="col">パス更新日</th>
                 <th scope="col"><span class="sr-only">操作</span></th>
               </tr>
             </thead>
@@ -247,6 +248,17 @@
                     >{{ account.registered_email }}</span
                   >
                 </td>
+                <td class="url-cell" data-label="ログインURL">
+                  <a
+                    v-if="safeUrl(account.login_url)"
+                    :href="safeUrl(account.login_url)"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    :title="safeUrl(account.login_url)"
+                    :aria-label="account.service_name + 'のログインURLを開く'"
+                  >{{ safeUrl(account.login_url) }}</a>
+                  <span v-else class="missing-value">未設定</span>
+                </td>
                 <td class="storage-cell" data-label="保管場所">
                   <span
                     :class="{ 'missing-value': !account.storage_location }"
@@ -281,7 +293,7 @@
                     ><i></i>{{ account.status || '未設定' }}</span
                   >
                 </td>
-                <td class="review-cell" data-label="点検状況">
+                <td class="review-cell" data-label="パス更新日">
                   <span
                     class="badge"
                     :class="'badge-' + reviewFor(account).tone"

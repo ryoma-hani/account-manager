@@ -15,7 +15,6 @@ export const optionFields = Object.freeze([
     description: 'アカウントを探しやすくするための分類',
   },
   { key: 'status', label: '状態', description: 'サービスの利用状況' },
-  { key: 'billing', label: '有料/無料', description: 'サービスの課金区分' },
 ]);
 
 export const defaultOptions = Object.freeze({
@@ -45,7 +44,6 @@ export const defaultOptions = Object.freeze({
     'その他',
   ]),
   status: Object.freeze(['利用中', '休眠', '解約予定', '解約済']),
-  billing: Object.freeze(['無料', '有料']),
 });
 
 export function freshOptions() {

@@ -692,7 +692,7 @@ h2 {
   text-align: left;
   white-space: nowrap;
   table-layout: fixed;
-  min-width: 920px;
+  min-width: 1080px;
 }
 .accounts-table th {
   color: #64766a;
@@ -704,26 +704,29 @@ h2 {
   border-bottom: 1px solid var(--line);
 }
 .accounts-table th:first-child {
-  width: 19%;
+  width: 18%;
   padding-left: 23px;
 }
 .accounts-table th:nth-child(2) {
-  width: 18%;
+  width: 14%;
 }
 .accounts-table th:nth-child(3) {
-  width: 18%;
+  width: 15%;
 }
 .accounts-table th:nth-child(4) {
-  width: 11%;
+  width: 17%;
 }
 .accounts-table th:nth-child(5) {
   width: 10%;
 }
 .accounts-table th:nth-child(6) {
-  width: 15%;
+  width: 10%;
+}
+.accounts-table th:nth-child(7) {
+  width: 10%;
 }
 .accounts-table th:last-child {
-  width: 9%;
+  width: 6%;
 }
 .accounts-table td {
   font-size: 12px;
@@ -739,6 +742,16 @@ h2 {
 }
 .accounts-table .service-cell {
   padding-left: 23px;
+}
+.url-cell a {
+  display: block;
+  overflow: hidden;
+  color: var(--green);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.url-cell a:hover {
+  text-decoration: underline;
 }
 .service-cell .service-avatar {
   float: left;
@@ -2051,6 +2064,7 @@ dialog::backdrop {
     margin-top: 3px;
   }
   .id-cell,
+  .url-cell,
   .storage-cell {
     padding-top: 2px !important;
   }

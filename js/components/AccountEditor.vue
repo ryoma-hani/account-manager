@@ -130,15 +130,6 @@
                 </option>
               </select></label
             >
-            <label class="field" for="account-billing"
-              ><span>有料/無料</span
-              ><select id="account-billing" v-model="form.billing">
-                <option value="">未設定</option>
-                <option v-for="value in choices('billing')" :key="value">
-                  {{ value }}
-                </option>
-              </select></label
-            >
             <label class="field" for="reviewed-date"
               ><span>最終点検日</span
               ><input
