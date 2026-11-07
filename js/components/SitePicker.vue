@@ -37,7 +37,11 @@
         type="button"
         @click="$emit('select', site)"
       >
-        <span class="site-picker-mark" aria-hidden="true">
+        <span
+          class="site-picker-mark"
+          :class="{ 'site-picker-mark-google': site.logo === 'google' }"
+          aria-hidden="true"
+        >
           <img
             v-if="site.logo && !failedLogos.includes(site.name)"
             :src="logoUrl(site)"
@@ -102,6 +106,8 @@ export default {
   },
   methods: {
     logoUrl(site) {
+      if (site.logo === 'google')
+        return 'https://developers.google.com/static/identity/images/g-logo.png';
       return `https://cdn.simpleicons.org/${encodeURIComponent(site.logo)}`;
     },
     hideLogo(name) {

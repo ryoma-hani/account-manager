@@ -1382,6 +1382,9 @@ dialog::backdrop {
   height: 22px;
   object-fit: contain;
 }
+.site-picker-mark-google {
+  background: #fff;
+}
 .site-picker-copy {
   flex: 1;
   min-width: 0;
