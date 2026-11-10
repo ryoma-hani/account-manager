@@ -129,7 +129,9 @@ export function filterAccounts(accounts, filters, today = todayString()) {
     const review = reviewStatus(account, today);
     if (filters.review === 'needed' && !review.needsReview) return false;
     if (filters.review === 'ok' && review.needsReview) return false;
-    const text = Object.values(accountPayload(account))
+    const searchableAccount = accountPayload(account);
+    delete searchableAccount.storage_item;
+    const text = Object.values(searchableAccount)
       .join(' ')
       .normalize('NFKC')
       .toLocaleLowerCase('ja');

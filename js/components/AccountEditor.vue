@@ -84,14 +84,6 @@
                 </option>
               </select></label
             >
-            <label class="field" for="storage-item"
-              ><span>保管先での項目名</span
-              ><input
-                id="storage-item"
-                v-model="form.storage_item"
-                placeholder="例：Notion / 個人用"
-                maxlength="500"
-            /></label>
             <label class="field" for="two-factor"
               ><span>2段階認証</span
               ><select id="two-factor" v-model="form.two_factor">

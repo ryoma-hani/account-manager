@@ -263,11 +263,6 @@
                   <span
                     :class="{ 'missing-value': !account.storage_location }"
                     >{{ account.storage_location || '未設定' }}</span
-                  ><span
-                    v-if="account.storage_item"
-                    class="cell-secondary"
-                    :title="account.storage_item"
-                    >{{ account.storage_item }}</span
                   >
                 </td>
                 <td class="factor-cell" data-label="2段階認証">
@@ -354,7 +349,7 @@
       <div>
         <strong>パスワードは、ここには書かない。</strong>
         <p>
-          保管場所と項目名だけを記録しましょう。パスワード・認証コード・リカバリーコードは、それぞれの保管先で管理してください。
+          保管場所だけを記録しましょう。パスワード・認証コード・リカバリーコードは、それぞれの保管先で管理してください。
         </p>
       </div>
     </div>
