@@ -138,7 +138,7 @@ function normalizePhoneLines(value) {
     .filter((line) => line && typeof line === 'object')
     .map((line) => ({
       id: typeof line.id === 'string' ? line.id : '',
-      carrier: typeof line.carrier === 'string' ? line.carrier.trim().slice(0, 100) : '',
+      carrier: typeof line.carrier === 'string' ? line.carrier.trim().slice(0, 40) : '',
       phone_number: typeof line.phone_number === 'string' ? line.phone_number.trim().slice(0, 30) : '',
     }))
     .filter((line) => line.id && line.carrier && line.phone_number);

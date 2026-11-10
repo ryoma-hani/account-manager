@@ -280,7 +280,7 @@
                       v-if="account.two_factor && account.two_factor !== 'なし'"
                       name="shield"
                       :size="14"
-                    />{{ account.two_factor || '未設定' }}</span
+                    />{{ twoFactorLabel(account) }}</span
                   >
                 </td>
                 <td class="state-cell" data-label="状態">
@@ -370,6 +370,20 @@ import {
   displayDate,
   todayString,
 } from '../utils/ledger.js';
+
+function displayTwoFactor(value = '') {
+  const raw = String(value ?? '');
+  if (raw.startsWith('SMS::')) {
+    const separator = raw.lastIndexOf('::');
+    const carrier = raw.slice('SMS::'.length, separator);
+    const phoneNumber = raw.slice(separator + 2);
+    return `SMS（${carrier} ${phoneNumber}）`;
+  }
+  if (raw.startsWith('認証アプリ::'))
+    return `認証アプリ（${raw.slice('認証アプリ::'.length)}）`;
+  return raw;
+}
+
 export default {
   components: { AppIcon },
   props: {
@@ -448,6 +462,9 @@ export default {
   methods: {
     safeUrl,
     displayDate,
+    twoFactorLabel(account) {
+      return displayTwoFactor(account.two_factor) || '未設定';
+    },
     reviewFor(account) {
       return reviewStatus(account, this.today);
     },

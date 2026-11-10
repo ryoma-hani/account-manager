@@ -38,7 +38,7 @@
           </label>
           <label v-if="carrierChoice === 'other'" class="option-field" for="phone-carrier-other">
             <span>携帯会社名</span>
-            <input id="phone-carrier-other" v-model="otherCarrier" maxlength="100" required placeholder="例：地域の通信会社" :disabled="saving" />
+            <input id="phone-carrier-other" v-model="otherCarrier" maxlength="40" required placeholder="例：地域の通信会社" :disabled="saving" />
           </label>
           <label class="option-field" for="phone-number">
             <span>電話番号</span>
@@ -120,7 +120,7 @@ export default {
       this.validation = '';
       const carrier = this.carrierChoice === 'other' ? this.otherCarrier.trim() : this.carrierChoice;
       const digits = this.phoneNumber.replace(/[\s-]/g, '');
-      if (!carrier || carrier.length > 100) {
+      if (!carrier || carrier.length > 40) {
         this.validation = '携帯会社を選択するか、会社名を入力してください。';
         return;
       }

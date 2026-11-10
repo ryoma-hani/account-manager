@@ -853,6 +853,8 @@ h2 {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .factor-missing {
   color: #b8a281;

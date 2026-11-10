@@ -101,6 +101,54 @@
                 </option>
               </select></label
             >
+            <label
+              v-if="form.two_factor === 'SMS'"
+              class="field field-wide factor-detail-field"
+              for="two-factor-phone"
+            >
+              <span>SMSを受け取る電話番号</span>
+              <select
+                id="two-factor-phone"
+                v-model="twoFactorPhoneLineId"
+                required
+              >
+                <option value="">電話番号を選択してください</option>
+                <option
+                  v-for="line in phoneLines"
+                  :key="line.id"
+                  :value="line.id"
+                >
+                  {{ line.carrier }} · {{ line.phone_number }}
+                </option>
+              </select>
+              <small v-if="!phoneLines.length" class="factor-detail-help">
+                先にワークスペースの「電話番号」で携帯会社と番号を登録してください。
+              </small>
+            </label>
+            <template v-if="form.two_factor === '認証アプリ'">
+              <label class="field" for="authenticator-app">
+                <span>認証アプリ</span>
+                <select id="authenticator-app" v-model="authenticatorChoice">
+                  <option value="">アプリを選択してください</option>
+                  <option v-for="app in authenticatorApps" :key="app" :value="app">{{ app }}</option>
+                  <option value="other">その他（手入力）</option>
+                </select>
+              </label>
+              <label
+                v-if="authenticatorChoice === 'other'"
+                class="field"
+                for="authenticator-app-other"
+              >
+                <span>アプリ名</span>
+                <input
+                  id="authenticator-app-other"
+                  v-model.trim="customAuthenticator"
+                  maxlength="70"
+                  placeholder="使用している認証アプリ"
+                  required
+                />
+              </label>
+            </template>
           </div>
           <p class="field-note">
             <app-icon
@@ -196,24 +244,62 @@ import {
   validateAccount,
   displayDate,
 } from '../utils/ledger.js';
+
+const authenticatorApps = [
+  'Google Authenticator',
+  'Microsoft Authenticator',
+  'Authy',
+  '1Password',
+  'iCloudパスワード',
+  'Bitwarden',
+];
+
+function parseTwoFactor(value = '') {
+  const raw = String(value ?? '');
+  if (raw.startsWith('SMS::')) {
+    const separator = raw.lastIndexOf('::');
+    const carrier = raw.slice('SMS::'.length, separator);
+    const phoneNumber = raw.slice(separator + 2);
+    return { method: 'SMS', carrier, phoneNumber, appName: '' };
+  }
+  if (raw.startsWith('認証アプリ::'))
+    return { method: '認証アプリ', appName: raw.slice('認証アプリ::'.length) };
+  return { method: raw, carrier: '', phoneNumber: '', appName: '' };
+}
+
 export default {
   components: { AppIcon },
   props: {
     account: Object,
     initialValues: Object,
     options: { type: Object, required: true },
+    phoneLines: { type: Array, default: () => [] },
     saving: Boolean,
     error: String,
   },
   emits: ['close', 'save'],
   data() {
+    const parsed = parseTwoFactor(
+      this.account?.two_factor ?? this.initialValues?.two_factor,
+    );
+    const matchingLine = this.phoneLines.find(
+      (line) =>
+        line.carrier === parsed.carrier &&
+        line.phone_number === parsed.phoneNumber,
+    );
+    const knownApp = authenticatorApps.includes(parsed.appName);
     return {
       form: {
         ...blankAccount(),
         ...(this.account ?? {}),
         ...(this.initialValues ?? {}),
         last_reviewed_on: this.account?.last_reviewed_on ?? '',
+        two_factor: parsed.method,
       },
+      authenticatorApps,
+      twoFactorPhoneLineId: matchingLine?.id ?? '',
+      authenticatorChoice: knownApp ? parsed.appName : parsed.appName ? 'other' : '',
+      customAuthenticator: knownApp ? '' : parsed.appName,
       validation: '',
       today: todayString(),
     };
@@ -252,7 +338,26 @@ export default {
     submit() {
       if (this.saving) return;
       this.validation = validateAccount(this.form, this.today);
-      if (!this.validation) this.$emit('save', { ...this.form });
+      const value = { ...this.form };
+      if (!this.validation && value.two_factor === 'SMS') {
+        const line = this.phoneLines.find(
+          (item) => item.id === this.twoFactorPhoneLineId,
+        );
+        if (!line) this.validation = 'SMSを受け取る電話番号を選択してください。';
+        else value.two_factor = `SMS::${line.carrier}::${line.phone_number}`;
+      }
+      if (!this.validation && value.two_factor === '認証アプリ') {
+        const appName =
+          this.authenticatorChoice === 'other'
+            ? this.customAuthenticator.trim()
+            : this.authenticatorChoice;
+        if (!appName) this.validation = '使用している認証アプリを選択してください。';
+        else value.two_factor = `認証アプリ::${appName}`;
+      }
+      if (!this.validation && value.two_factor.length > 100)
+        this.validation =
+          '2段階認証の詳細が長すぎます。会社名またはアプリ名を短くしてください。';
+      if (!this.validation) this.$emit('save', value);
     },
   },
 };
