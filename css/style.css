@@ -1718,6 +1718,38 @@ dialog::backdrop {
   margin-bottom: 0;
   font-size: 10px;
 }
+.phone-lines-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 20px;
+  padding: 13px 16px;
+  border: 1px solid #dcece3;
+  border-radius: 9px;
+  color: var(--green);
+  background: #f1f8f4;
+}
+.phone-lines-note p { margin: 0; color: #60746a; font-size: 12px; }
+.phone-entry-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: end; }
+.phone-entry-form .option-field:last-of-type { grid-column: 1 / -1; }
+.phone-entry-actions { display: flex; gap: 10px; grid-column: 1 / -1; }
+.phone-lines-count { color: var(--muted); font-size: 12px; }
+.phone-lines-empty { display: flex; align-items: center; gap: 14px; padding: 12px 0; }
+.phone-lines-empty strong { font-size: 13px; }
+.phone-lines-empty p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
+.phone-lines-list { list-style: none; margin: 0; padding: 0; }
+.phone-line-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+.phone-line-item:first-child { border-top: 0; }
+.phone-line-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; }
+.phone-line-copy strong { font-size: 13px; }
+.phone-line-copy span { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+.phone-line-actions { display: flex; gap: 5px; }
+@media (max-width: 600px) {
+  .phone-entry-form { grid-template-columns: 1fr; }
+  .phone-entry-form .option-field:last-of-type,
+  .phone-entry-actions { grid-column: auto; }
+  .phone-entry-actions { flex-wrap: wrap; }
+}
 /* 小さい画面 */
 @media (min-width: 1550px) {
   .main-content {

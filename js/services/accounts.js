@@ -70,15 +70,76 @@ export async function readOptions(userId) {
   return normalizeOptions(data?.options);
 }
 
-export async function writeOptions(options, userId) {
+export async function readPhoneLines(userId) {
+  const { data, error } = await supabase
+    .from('user_settings')
+    .select('options')
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (error) throw error;
+  return normalizePhoneLines(data?.options?.phone_lines);
+}
+
+export async function writePhoneLines(phoneLines, userId) {
+  const { data: current, error: readError } = await supabase
+    .from('user_settings')
+    .select('options')
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (readError) throw readError;
+  const options = current?.options && typeof current.options === 'object'
+    ? current.options
+    : {};
   const { data, error } = await supabase
     .from('user_settings')
     .upsert(
-      { user_id: userId, options: normalizeOptions(options) },
+      {
+        user_id: userId,
+        options: { ...options, phone_lines: normalizePhoneLines(phoneLines) },
+      },
+      { onConflict: 'user_id' },
+    )
+    .select('options')
+    .single();
+  if (error) throw error;
+  return normalizePhoneLines(data.options?.phone_lines);
+}
+
+export async function writeOptions(options, userId) {
+  const { data: current, error: readError } = await supabase
+    .from('user_settings')
+    .select('options')
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (readError) throw readError;
+  const { data, error } = await supabase
+    .from('user_settings')
+    .upsert(
+      {
+        user_id: userId,
+        options: {
+          ...normalizeOptions(options),
+          ...(Array.isArray(current?.options?.phone_lines)
+            ? { phone_lines: normalizePhoneLines(current.options.phone_lines) }
+            : {}),
+        },
+      },
       { onConflict: 'user_id' },
     )
     .select('options')
     .single();
   if (error) throw error;
   return normalizeOptions(data.options);
+}
+
+function normalizePhoneLines(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((line) => line && typeof line === 'object')
+    .map((line) => ({
+      id: typeof line.id === 'string' ? line.id : '',
+      carrier: typeof line.carrier === 'string' ? line.carrier.trim().slice(0, 100) : '',
+      phone_number: typeof line.phone_number === 'string' ? line.phone_number.trim().slice(0, 30) : '',
+    }))
+    .filter((line) => line.id && line.carrier && line.phone_number);
 }

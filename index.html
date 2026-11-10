@@ -76,6 +76,14 @@
               ><span class="nav-count">{{ accounts.length }}</span>
             </button>
             <button
+              :class="{ active: view === 'phones' }"
+              :aria-current="view === 'phones' ? 'page' : null"
+              @click="view = 'phones'"
+            >
+              <app-icon name="phone"></app-icon><span>電話番号</span>
+              <span class="nav-count">{{ phoneLines.length }}</span>
+            </button>
+            <button
               :class="{ active: view === 'settings' }"
               :aria-current="view === 'settings' ? 'page' : null"
               @click="view = 'settings'"
@@ -166,6 +174,15 @@
             @change-password="changePassword"
             @retry="loadAccounts"
           ></settings-page>
+          <phone-lines-page
+            v-show="view === 'phones'"
+            :phone-lines="phoneLines"
+            :saving="saving"
+            :loading="loading"
+            :load-error="loadError"
+            @save="savePhoneLines"
+            @retry="loadAccounts"
+          ></phone-lines-page>
           <footer class="app-footer">
             <span>アカウント台帳</span
             ><span>登録情報をまとめて、日々の見直しを少し身近に。</span>

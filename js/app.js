@@ -36,6 +36,7 @@ try {
   const app = createApp({
     components: {
       HomePage: component('js/pages/Home.vue'),
+      PhoneLinesPage: component('js/pages/PhoneLines.vue'),
       SettingsPage: component('js/pages/Settings.vue'),
       LoginPanel: component('js/components/LoginPanel.vue'),
       AppNotice: component('js/components/AppNotice.vue'),
@@ -51,6 +52,7 @@ try {
       view: 'home',
       sidebarOpen: true,
       accounts: [],
+      phoneLines: [],
       options: freshOptions(),
       siteCatalog: popularSites,
       loading: false,
@@ -109,6 +111,7 @@ try {
       resetWorkspace() {
         dataGeneration += 1;
         this.accounts = [];
+        this.phoneLines = [];
         this.options = freshOptions();
         this.view = 'home';
         this.loading = false;
@@ -139,6 +142,7 @@ try {
         this.resetWorkspace();
         this.isDemo = true;
         this.accounts = demoAccounts();
+        this.phoneLines = [];
         this.booting = false;
       },
       async logout() {
@@ -163,13 +167,15 @@ try {
         this.loading = true;
         this.loadError = '';
         try {
-          const [accounts, options] = await Promise.all([
+          const [accounts, options, phoneLines] = await Promise.all([
             repository.listAccounts(userId),
             repository.readOptions(userId),
+            repository.readPhoneLines(userId),
           ]);
           if (generation !== dataGeneration) return;
           this.accounts = accounts;
           this.options = options;
+          this.phoneLines = phoneLines;
         } catch (error) {
           if (generation === dataGeneration) {
             this.accounts = [];
@@ -327,6 +333,24 @@ try {
         } catch (error) {
           if (generation === dataGeneration)
             this.settingsError = errorMessage(error);
+        } finally {
+          this.saving = false;
+        }
+      },
+      async savePhoneLines(phoneLines) {
+        if (this.saving || this.loading || this.loadError) return;
+        const generation = dataGeneration;
+        this.saving = true;
+        try {
+          const updated = this.isDemo
+            ? phoneLines
+            : await repository.writePhoneLines(phoneLines, this.session.user.id);
+          if (generation !== dataGeneration) return;
+          this.phoneLines = updated;
+          this.notify('電話番号を保存しました。');
+        } catch (error) {
+          if (generation === dataGeneration)
+            this.notify(errorMessage(error), 'error');
         } finally {
           this.saving = false;
         }
