@@ -704,29 +704,29 @@ h2 {
   border-bottom: 1px solid var(--line);
 }
 .accounts-table th:first-child {
-  width: 16%;
+  width: 15%;
   padding-left: 23px;
 }
 .accounts-table th:nth-child(2) {
   width: 20%;
 }
 .accounts-table th:nth-child(3) {
-  width: 15%;
+  width: 14%;
 }
 .accounts-table th:nth-child(4) {
-  width: 12%;
+  width: 11%;
 }
 .accounts-table th:nth-child(5) {
-  width: 11%;
+  width: 10%;
 }
 .accounts-table th:nth-child(6) {
   width: 9%;
 }
 .accounts-table th:nth-child(7) {
-  width: 11%;
+  width: 12%;
 }
 .accounts-table th:last-child {
-  width: 6%;
+  width: 9%;
 }
 .accounts-table td {
   font-size: 12px;
@@ -913,7 +913,12 @@ h2 {
   background: #f0f3f1;
 }
 .actions-cell {
-  white-space: normal;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1px;
+  white-space: nowrap;
+  flex-wrap: nowrap;
 }
 .actions-cell .icon-button {
   width: 24px;
