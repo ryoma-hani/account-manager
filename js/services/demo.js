@@ -51,7 +51,7 @@ export function demoAccounts() {
     [
       'Figma',
       '仕事',
-      '1Password',
+      'ノートン パスワード マネージャー',
       '認証アプリ',
       '利用中',
       '無料',

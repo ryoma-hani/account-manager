@@ -22,6 +22,7 @@ export const defaultOptions = Object.freeze({
     '1Password',
     'iCloudキーチェーン',
     'Bitwarden',
+    'ノートン パスワード マネージャー',
     'ブラウザ(Chrome等)',
     '紙のノート',
     'その他',

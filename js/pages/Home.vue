@@ -260,22 +260,23 @@
                   <span v-else class="missing-value">未設定</span>
                 </td>
                 <td class="storage-cell" data-label="保管場所">
-                  <div v-if="storageLinks(account)" class="storage-links">
+                  <div v-if="storageLinkFor(account)" class="storage-links">
                     <a
                       class="storage-web-link"
-                      :href="storageLinks(account).web"
+                      :href="storageLinkFor(account).web"
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label="Bitwarden Web保管庫を開く"
+                      :aria-label="account.storage_location + ' Web保管庫を開く'"
                     >
                       {{ account.storage_location }}
                       <app-icon name="external" :size="12" />
                     </a>
                     <a
+                      v-if="storageLinkFor(account).app"
                       class="storage-app-link"
-                      :href="storageLinks(account).app"
-                      aria-label="Bitwardenアプリを開く"
-                      title="Bitwardenアプリを開く"
+                      :href="storageLinkFor(account).app"
+                      :aria-label="account.storage_location + 'アプリを開く'"
+                      :title="account.storage_location + 'アプリを開く'"
                     >アプリを開く</a>
                   </div>
                   <span
@@ -377,7 +378,7 @@
 
 <script>
 import AppIcon from '../components/AppIcon.vue';
-import { storageLinks as storageLinksByLocation } from '../config/storage-links.js';
+import { storageLinks } from '../config/storage-links.js';
 import {
   reviewStatus,
   filterAccounts,
@@ -477,8 +478,11 @@ export default {
   methods: {
     safeUrl,
     displayDate,
-    storageLinks(account) {
-      return storageLinksByLocation[account.storage_location] ?? null;
+    storageLinkFor(account) {
+      const location = account.storage_location?.trim();
+      return Object.hasOwn(storageLinks, location)
+        ? storageLinks[location]
+        : null;
     },
     twoFactorLabel(account) {
       return displayTwoFactor(account.two_factor) || '未設定';
