@@ -152,15 +152,23 @@
         <fieldset :disabled="saving">
           <legend>分類と点検</legend>
           <div class="form-grid">
-            <label class="field" for="account-category"
-              ><span>カテゴリ</span
-              ><select id="account-category" v-model="form.category">
+            <label class="field" for="account-category">
+              <span id="account-category-label">カテゴリ</span>
+              <select
+                id="account-category"
+                v-model="selectedCategory"
+                aria-labelledby="account-category-label"
+                :aria-describedby="suggestedCategory ? 'account-category-suggestion' : null"
+              >
                 <option value="">未分類</option>
                 <option v-for="value in choices('category')" :key="value">
                   {{ value }}
                 </option>
-              </select></label
-            >
+              </select>
+              <small v-if="suggestedCategory" id="account-category-suggestion">
+                サイトからの候補：{{ suggestedCategory }}
+              </small>
+            </label>
             <label class="field" for="account-status"
               ><span>状態</span
               ><select id="account-status" v-model="form.status">
@@ -264,6 +272,7 @@ export default {
   props: {
     account: Object,
     initialValues: Object,
+    suggestCategory: { type: Function, default: () => '' },
     options: { type: Object, required: true },
     phoneLines: { type: Array, default: () => [] },
     saving: Boolean,
@@ -288,6 +297,7 @@ export default {
         last_reviewed_on: this.account?.last_reviewed_on ?? '',
         two_factor: parsed.method,
       },
+      categorySelected: false,
       authenticatorApps,
       twoFactorPhoneLineId: matchingLine?.id ?? '',
       authenticatorChoice: knownApp ? parsed.appName : parsed.appName ? 'other' : '',
@@ -297,6 +307,23 @@ export default {
     };
   },
   computed: {
+    suggestedCategory() {
+      if (this.account?.category || this.categorySelected) return '';
+      const category = this.suggestCategory(
+        this.form.service_name,
+        this.form.login_url,
+      );
+      return this.options.category?.includes(category) ? category : '';
+    },
+    selectedCategory: {
+      get() {
+        return this.suggestedCategory || this.form.category || '';
+      },
+      set(category) {
+        this.categorySelected = true;
+        this.form.category = category;
+      },
+    },
     review() {
       return reviewStatus(this.form, this.today);
     },
@@ -330,7 +357,7 @@ export default {
     submit() {
       if (this.saving) return;
       this.validation = validateAccount(this.form, this.today);
-      const value = { ...this.form };
+      const value = { ...this.form, category: this.selectedCategory };
       if (!this.validation && value.two_factor === 'SMS') {
         const line = this.phoneLines.find(
           (item) => item.id === this.twoFactorPhoneLineId,

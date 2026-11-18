@@ -27,7 +27,7 @@
           autocomplete="off"
         />
       </label>
-      <p>選ぶとサービス名とログインURLが入力されます。</p>
+      <p>選ぶとサービス名・ログインURL・カテゴリの候補が入力されます。</p>
     </div>
     <div class="site-picker-list" aria-label="よく使われるサービス">
       <button

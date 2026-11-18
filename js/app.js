@@ -17,7 +17,7 @@ try {
     ledger,
     { freshOptions },
     { demoAccounts },
-    { popularSites },
+    { popularSites, suggestSiteCategory },
   ] = await Promise.all([
     import('./sfc-loader.js'),
     import('./services/auth.js'),
@@ -26,7 +26,7 @@ try {
     import('./utils/ledger.js'),
     import('./config/options.js'),
     import('./services/demo.js'),
-    import('./config/site-catalog.js'),
+    import('./config/site-catalog.js?v=2'),
   ]);
   const { createApp, defineAsyncComponent } = window.Vue;
   const component = (path) => defineAsyncComponent(() => loadSfc(path));
@@ -101,6 +101,7 @@ try {
       clearTimeout(noticeTimer);
     },
     methods: {
+      suggestSiteCategory,
       notify(message, kind = 'success') {
         clearTimeout(noticeTimer);
         this.notice = { message, kind };

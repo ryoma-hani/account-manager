@@ -23,7 +23,7 @@
       defer
       src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"
     ></script>
-    <script type="module" src="./js/app.js"></script>
+    <script type="module" src="./js/app.js?v=2"></script>
   </head>
   <body>
     <div id="boot-status" class="boot-status" role="status">
@@ -199,6 +199,7 @@
           v-if="editorOpen"
           :account="editingAccount"
           :initial-values="editorInitialValues"
+          :suggest-category="suggestSiteCategory"
           :options="options"
           :phone-lines="phoneLines"
           :saving="saving"
