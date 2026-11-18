@@ -859,11 +859,14 @@ h2 {
   min-width: 0;
 }
 .storage-web-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
   max-width: 100%;
   color: #607768;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.storage-web-link > svg {
+  margin-inline-start: 4px;
+  vertical-align: middle;
 }
 .storage-web-link:hover,
 .storage-app-link:hover {
