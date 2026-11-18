@@ -704,26 +704,26 @@ h2 {
   border-bottom: 1px solid var(--line);
 }
 .accounts-table th:first-child {
-  width: 18%;
+  width: 16%;
   padding-left: 23px;
 }
 .accounts-table th:nth-child(2) {
-  width: 14%;
+  width: 20%;
 }
 .accounts-table th:nth-child(3) {
   width: 15%;
 }
 .accounts-table th:nth-child(4) {
-  width: 17%;
+  width: 12%;
 }
 .accounts-table th:nth-child(5) {
-  width: 10%;
+  width: 11%;
 }
 .accounts-table th:nth-child(6) {
-  width: 10%;
+  width: 9%;
 }
 .accounts-table th:nth-child(7) {
-  width: 10%;
+  width: 11%;
 }
 .accounts-table th:last-child {
   width: 6%;
@@ -819,9 +819,13 @@ h2 {
   min-width: 0;
 }
 .id-line > span {
-  overflow: hidden;
-  text-overflow: ellipsis;
+  min-width: 0;
+  overflow-wrap: anywhere;
   color: #687b6f;
+}
+.id-cell .cell-secondary {
+  overflow-wrap: anywhere;
+  text-overflow: clip;
 }
 .copy-button {
   width: 25px;
