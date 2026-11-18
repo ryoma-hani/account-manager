@@ -816,21 +816,24 @@ h2 {
 .id-line {
   display: flex;
   align-items: center;
+  gap: 4px;
   min-width: 0;
+}
+.id-line > span,
+.id-cell .cell-secondary {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .id-line > span {
   min-width: 0;
-  overflow-wrap: anywhere;
   color: #687b6f;
 }
 .id-cell .cell-secondary {
-  overflow-wrap: anywhere;
   text-overflow: clip;
 }
 .copy-button {
   width: 25px;
   height: 25px;
-  margin-left: 3px;
   color: #bec8c0;
 }
 .storage-cell > span:first-child {
