@@ -851,6 +851,29 @@ h2 {
 .storage-cell .missing-value {
   color: #b49c73 !important;
 }
+.storage-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  min-width: 0;
+}
+.storage-web-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  color: #607768;
+}
+.storage-web-link:hover,
+.storage-app-link:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+.storage-app-link {
+  color: #7e8d83;
+  font-size: 9px;
+}
 .factor-label {
   color: #5b7869;
   font-size: 10px;

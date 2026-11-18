@@ -260,7 +260,26 @@
                   <span v-else class="missing-value">未設定</span>
                 </td>
                 <td class="storage-cell" data-label="保管場所">
+                  <div v-if="storageLinks(account)" class="storage-links">
+                    <a
+                      class="storage-web-link"
+                      :href="storageLinks(account).web"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Bitwarden Web保管庫を開く"
+                    >
+                      {{ account.storage_location }}
+                      <app-icon name="external" :size="12" />
+                    </a>
+                    <a
+                      class="storage-app-link"
+                      :href="storageLinks(account).app"
+                      aria-label="Bitwardenアプリを開く"
+                      title="Bitwardenアプリを開く"
+                    >アプリを開く</a>
+                  </div>
                   <span
+                    v-else
                     :class="{ 'missing-value': !account.storage_location }"
                     >{{ account.storage_location || '未設定' }}</span
                   >
@@ -358,6 +377,7 @@
 
 <script>
 import AppIcon from '../components/AppIcon.vue';
+import { storageLinks as storageLinksByLocation } from '../config/storage-links.js';
 import {
   reviewStatus,
   filterAccounts,
@@ -457,6 +477,9 @@ export default {
   methods: {
     safeUrl,
     displayDate,
+    storageLinks(account) {
+      return storageLinksByLocation[account.storage_location] ?? null;
+    },
     twoFactorLabel(account) {
       return displayTwoFactor(account.two_factor) || '未設定';
     },
