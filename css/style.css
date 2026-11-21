@@ -698,13 +698,13 @@ h2 {
   width: 17%;
 }
 .accounts-table th:nth-child(4) {
-  width: 11%;
+  width: 9%;
 }
 .accounts-table th:nth-child(5) {
-  width: 10%;
+  width: 11%;
 }
 .accounts-table th:nth-child(6) {
-  width: 9%;
+  width: 10%;
 }
 .accounts-table th:nth-child(7) {
   width: 12%;
@@ -736,6 +736,11 @@ h2 {
 }
 .url-cell a:hover {
   text-decoration: underline;
+}
+.category-cell {
+  color: #536b5b;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .service-cell .service-avatar {
   float: left;
@@ -774,15 +779,7 @@ h2 {
 }
 .service-meta {
   display: flex;
-  align-items: center;
-  gap: 7px;
   margin-top: 3px;
-  font-size: 9px;
-  color: #a6b0a8;
-}
-.service-meta > span:first-child {
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .service-meta a {
   margin-left: 1px;
@@ -870,31 +867,6 @@ h2 {
 }
 .factor-missing {
   color: #b8a281;
-}
-.state-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: #a0aaa3;
-  font-size: 9px;
-}
-.state-label i {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #c0c9c2;
-}
-.state-active {
-  color: #6e9b82;
-}
-.state-active i {
-  background: #84b699;
-}
-.state-cancel {
-  color: #af9166;
-}
-.state-cancel i {
-  background: #cdb589;
 }
 .badge {
   display: inline-flex;
@@ -2107,12 +2079,9 @@ dialog::backdrop {
   .service-name {
     font-size: 14px;
   }
-  .service-meta {
-    font-size: 10px;
-    margin-top: 3px;
-  }
   .id-cell,
   .url-cell,
+  .category-cell,
   .storage-cell {
     padding-top: 2px !important;
   }
@@ -2128,10 +2097,6 @@ dialog::backdrop {
   }
   .cell-secondary {
     font-size: 9px;
-  }
-  .factor-label,
-  .state-label {
-    font-size: 10px;
   }
   .accounts-table .review-cell {
     grid-column: 1 / -1;

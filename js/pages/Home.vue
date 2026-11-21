@@ -164,9 +164,9 @@
                 <th scope="col">サービス</th>
                 <th scope="col">ログインID</th>
                 <th scope="col">ログインURL</th>
+                <th scope="col">カテゴリ</th>
                 <th scope="col">パスワードの保管場所</th>
                 <th scope="col">2段階認証</th>
-                <th scope="col">状態</th>
                 <th scope="col">パス更新日</th>
                 <th scope="col"><span class="sr-only">操作</span></th>
               </tr>
@@ -183,10 +183,8 @@
                       @click="$emit('edit', account)"
                     >
                       {{ account.service_name }}</button
-                    ><span class="service-meta"
-                      ><span>{{ account.category || '未分類' }}</span
+                    ><span v-if="safeUrl(account.login_url)" class="service-meta"
                       ><a
-                        v-if="safeUrl(account.login_url)"
                         :href="safeUrl(account.login_url)"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -235,6 +233,9 @@
                   >{{ safeUrl(account.login_url) }}</a>
                   <span v-else class="missing-value">未設定</span>
                 </td>
+                <td class="category-cell" data-label="カテゴリ">
+                  {{ account.category || '未分類' }}
+                </td>
                 <td class="storage-cell" data-label="保管場所">
                   <div v-if="storageLinkFor(account)" class="storage-links">
                     <a
@@ -272,16 +273,6 @@
                       name="shield"
                       :size="14"
                     />{{ twoFactorLabel(account) }}</span
-                  >
-                </td>
-                <td class="state-cell" data-label="状態">
-                  <span
-                    class="state-label"
-                    :class="{
-                      'state-active': account.status === '利用中',
-                      'state-cancel': account.status === '解約予定',
-                    }"
-                    ><i></i>{{ account.status || '未設定' }}</span
                   >
                 </td>
                 <td class="review-cell" data-label="パス更新日">
