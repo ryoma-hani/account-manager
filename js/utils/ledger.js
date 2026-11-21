@@ -106,9 +106,9 @@ export function validateAccount(account, today = todayString()) {
   )
     return '登録メールアドレスを確認してください。';
   if (account.last_reviewed_on && dateDay(account.last_reviewed_on) === null)
-    return '最終点検日を確認してください。';
+    return 'パス更新日を確認してください。';
   if (account.last_reviewed_on && account.last_reviewed_on > today)
-    return '最終点検日に未来の日付は指定できません。';
+    return 'パス更新日に未来の日付は指定できません。';
   return '';
 }
 

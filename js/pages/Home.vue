@@ -320,7 +320,7 @@
                   ><span class="cell-secondary">{{
                     account.last_reviewed_on
                       ? displayDate(account.last_reviewed_on)
-                      : 'まだ点検していません'
+                      : '日付の記録なし'
                   }}</span>
                 </td>
                 <td class="actions-cell">
@@ -328,9 +328,9 @@
                     class="icon-button"
                     :disabled="saving"
                     :aria-label="
-                      account.service_name + 'を今日点検したとして記録'
+                      account.service_name + 'のパス更新日を今日に設定'
                     "
-                    title="今日点検したとして記録"
+                    title="パス更新日を今日に設定"
                     @click="$emit('review', account)"
                   >
                     <app-icon name="check" :size="17" /></button
@@ -360,7 +360,7 @@
           <span
             ><span class="status-dot"></span>全
             {{ accounts.length }} 件のアカウント</span
-          ><span>「✓」で今日の点検を記録できます</span>
+          ><span>「✓」でパス更新日を今日に設定できます</span>
         </div>
       </template>
     </section>

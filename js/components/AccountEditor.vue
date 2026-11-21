@@ -179,7 +179,7 @@
               </select></label
             >
             <label class="field" for="reviewed-date"
-              ><span>最終点検日</span
+              ><span>パス更新日</span
               ><input
                 id="reviewed-date"
                 v-model="form.last_reviewed_on"

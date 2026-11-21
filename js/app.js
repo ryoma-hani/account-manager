@@ -19,11 +19,11 @@ try {
     { demoAccounts },
     { popularSites, suggestSiteCategory },
   ] = await Promise.all([
-    import('./sfc-loader.js'),
+    import('./sfc-loader.js?v=2'),
     import('./services/auth.js'),
     import('./services/accounts.js'),
     import('./services/supabase.js'),
-    import('./utils/ledger.js'),
+    import('./utils/ledger.js?v=2'),
     import('./config/options.js'),
     import('./services/demo.js'),
     import('./config/site-catalog.js?v=2'),
@@ -311,7 +311,7 @@ try {
           this.accounts = this.accounts.map((item) =>
             item.id === updated.id ? updated : item,
           );
-          this.notify('最終点検日を今日に更新しました。');
+          this.notify('パス更新日を今日に設定しました。');
         } catch (error) {
           if (generation === dataGeneration)
             this.notify(errorMessage(error), 'error');
