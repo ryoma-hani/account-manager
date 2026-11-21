@@ -20,7 +20,7 @@
     <div class="summary-grid">
       <button
         class="summary-card"
-        :class="{ selected: !filters.review }"
+        :class="{ selected: !filters.review && filters.storage === null }"
         @click="selectMetric('all')"
       >
         <span class="summary-icon mint"
@@ -32,6 +32,16 @@
           ></span
         ><app-icon class="summary-arrow" name="chevron" :size="17" />
       </button>
+      <div class="summary-card" :class="{ selected: filters.storage !== null }">
+        <span class="summary-icon violet"
+          ><app-icon name="lock" :size="22" /></span
+        ><span class="summary-copy" aria-live="polite" aria-atomic="true">
+          <span>{{ storageSummaryLabel }}</span>
+          <strong
+            >{{ unavailable ? '—' : storageAccounts.length }}<small>件</small></strong
+          >
+        </span>
+      </div>
       <button
         class="summary-card"
         :class="{ selected: filters.review === 'needed' }"
@@ -76,18 +86,17 @@
             <app-icon name="close" :size="16" /></button
           ><span v-else class="search-key" aria-hidden="true">検索</span>
         </div>
-        <div class="filter-selects">
-          <select v-model="filters.status" aria-label="状態で絞り込み">
-            <option value="">すべての状態</option>
-            <option v-for="status in statuses" :key="status">
-              {{ status }}
-            </option></select
-          ><select v-model="filters.review" aria-label="点検状況で絞り込み">
-            <option value="">すべての点検状況</option>
-            <option value="needed">要点検のみ</option>
-            <option value="ok">OKのみ</option>
-          </select>
-        </div>
+        <select
+          v-model="filters.storage"
+          class="storage-filter"
+          aria-label="保管場所で絞り込み"
+        >
+          <option :value="null">すべての保管場所</option>
+          <option v-for="location in storageLocations" :key="location" :value="location">
+            {{ location }}
+          </option>
+          <option value="">保管場所未設定</option>
+        </select>
       </div>
       <div class="category-row">
         <div class="category-tabs" aria-label="カテゴリで絞り込み">
@@ -96,7 +105,7 @@
             :aria-pressed="!filters.category"
             @click="filters.category = ''"
           >
-            すべて<span>{{ accounts.length }}</span></button
+            すべて<span>{{ storageAccounts.length }}</span></button
           ><button
             v-for="category in categories"
             :key="category"
@@ -378,7 +387,7 @@ export default {
   },
   emits: ['create', 'edit', 'delete', 'review', 'retry', 'copy'],
   data: () => ({
-    filters: { search: '', category: '', status: '', review: '' },
+    filters: { search: '', category: '', storage: null, review: '' },
     sort: 'updated',
     today: todayString(),
     clock: null,
@@ -400,19 +409,30 @@ export default {
         ]),
       ];
     },
-    statuses() {
+    storageLocations() {
       return [
         ...new Set([
-          ...this.options.status,
-          ...this.accounts.map((account) => account.status).filter(Boolean),
-        ]),
+          ...this.options.storage_location,
+          ...this.accounts.map((account) => account.storage_location?.trim()),
+          this.filters.storage,
+        ].filter(Boolean)),
       ];
     },
+    storageSummaryLabel() {
+      if (this.filters.storage === null) return 'すべての保管場所';
+      return this.filters.storage || '保管場所未設定';
+    },
+    storageAccounts() {
+      if (this.filters.storage === null) return this.accounts;
+      return this.accounts.filter(
+        (account) => (account.storage_location?.trim() ?? '') === this.filters.storage,
+      );
+    },
     hasFilters() {
-      return Object.values(this.filters).some(Boolean);
+      return this.filters.storage !== null || Object.values(this.filters).some(Boolean);
     },
     visibleAccounts() {
-      return filterAccounts(this.accounts, this.filters, this.today).sort(
+      return filterAccounts(this.storageAccounts, this.filters, this.today).sort(
         (a, b) => {
           if (this.sort === 'review') {
             const difference =
@@ -454,14 +474,14 @@ export default {
       return reviewStatus(account, this.today);
     },
     categoryCount(category) {
-      return this.accounts.filter((account) => account.category === category)
+      return this.storageAccounts.filter((account) => account.category === category)
         .length;
     },
     resetFilters() {
       this.filters = {
         search: '',
         category: '',
-        status: '',
+        storage: null,
         review: '',
       };
     },

@@ -420,7 +420,7 @@ h2 {
 }
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   margin-bottom: 29px;
 }
@@ -437,7 +437,7 @@ h2 {
   min-height: 110px;
   box-shadow: 0 2px 3px #1a3c2c02;
 }
-.summary-card:hover {
+button.summary-card:hover {
   border-color: #c4d9cc;
 }
 .summary-card.selected {
@@ -480,10 +480,14 @@ h2 {
   color: #697585;
   background: #edf0f5;
 }
+.summary-copy {
+  min-width: 0;
+}
 .summary-copy > span {
   color: #64766a;
   font-size: 12px;
   display: block;
+  overflow-wrap: anywhere;
 }
 .summary-copy strong {
   font-size: 30px;
@@ -588,14 +592,10 @@ h2 {
   border-radius: 4px;
   padding: 1px 5px;
 }
-.filter-selects {
-  display: flex;
-  gap: 10px;
-}
-.filter-selects select {
+.storage-filter {
   font-size: 10px;
-  width: auto;
-  min-width: 123px;
+  width: min(100%, 248px);
+  min-width: 0;
   height: 40px;
   border-color: #e7ece8;
 }
@@ -1790,12 +1790,6 @@ dialog::backdrop {
   .search-field {
     min-width: 220px;
   }
-  .filter-selects {
-    flex: 1;
-  }
-  .filter-selects select {
-    flex: 1;
-  }
 }
 @media (max-width: 900px) {
   .sidebar {
@@ -2008,14 +2002,8 @@ dialog::backdrop {
   .search-field input {
     font-size: 11px;
   }
-  .filter-selects {
+  .storage-filter {
     width: 100%;
-    gap: 9px;
-  }
-  .filter-selects select {
-    width: 50%;
-    min-width: 0;
-    font-size: 10px;
   }
   .category-row {
     padding: 0 16px;
