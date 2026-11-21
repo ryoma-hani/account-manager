@@ -704,10 +704,10 @@ button.summary-card:hover {
   width: 11%;
 }
 .accounts-table th:nth-child(6) {
-  width: 10%;
+  width: 13%;
 }
 .accounts-table th:nth-child(7) {
-  width: 12%;
+  width: 9%;
 }
 .accounts-table th:last-child {
   width: 9%;
@@ -864,6 +864,9 @@ button.summary-card:hover {
   gap: 4px;
   white-space: normal;
   overflow-wrap: anywhere;
+}
+.factor-label > svg {
+  flex-shrink: 0;
 }
 .factor-missing {
   color: #b8a281;
@@ -2085,6 +2088,9 @@ dialog::backdrop {
   }
   .cell-secondary {
     font-size: 9px;
+  }
+  .accounts-table .factor-cell {
+    grid-column: 1 / -1;
   }
   .accounts-table .review-cell {
     grid-column: 1 / -1;
