@@ -19,13 +19,13 @@ try {
     { demoAccounts },
     { popularSites, suggestSiteCategory },
   ] = await Promise.all([
-    import('./sfc-loader.js?v=2'),
+    import('./sfc-loader.js?v=3'),
     import('./services/auth.js'),
-    import('./services/accounts.js'),
+    import('./services/accounts.js?v=2'),
     import('./services/supabase.js'),
-    import('./utils/ledger.js?v=2'),
+    import('./utils/ledger.js?v=3'),
     import('./config/options.js'),
-    import('./services/demo.js'),
+    import('./services/demo.js?v=2'),
     import('./config/site-catalog.js?v=2'),
   ]);
   const { createApp, defineAsyncComponent } = window.Vue;

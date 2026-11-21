@@ -39,7 +39,6 @@ const icons = {
   check: ['m5 12 4 4L19 6'],
   alert: ['M12 3 1.5 21h21Z', 'M12 9v5', 'M12 17h.01'],
   clock: ['M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0', 'M12 7v5l3 2'],
-  wallet: ['M3 6h17v15H3Z', 'M3 6V3h14v3', 'M15 11h6v5h-6Z'],
   edit: ['m15 4 5 5', 'M3 21l1-6L17 2l5 5L9 20Z'],
   trash: ['M3 6h18', 'M9 6V3h6v3', 'm5 6 1 15h12l1-15', 'M10 10v7', 'M14 10v7'],
   copy: ['M9 9h12v12H9Z', 'M5 15H3V3h12v2'],

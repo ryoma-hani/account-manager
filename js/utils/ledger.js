@@ -77,7 +77,6 @@ export function blankAccount() {
     two_factor: '',
     category: '',
     status: '利用中',
-    billing: '無料',
     last_reviewed_on: '',
     notes: '',
   };
@@ -125,7 +124,6 @@ export function filterAccounts(accounts, filters, today = todayString()) {
   return accounts.filter((account) => {
     if (filters.category && account.category !== filters.category) return false;
     if (filters.status && account.status !== filters.status) return false;
-    if (filters.billing && account.billing !== filters.billing) return false;
     const review = reviewStatus(account, today);
     if (filters.review === 'needed' && !review.needsReview) return false;
     if (filters.review === 'ok' && review.needsReview) return false;

@@ -101,7 +101,7 @@ test('全半角・大文字小文字を吸収し、複数条件を組み合わ�
   assert.equal(
     filterAccounts(
       rows,
-      { category: '買い物', review: 'needed', billing: '有料' },
+      { category: '買い物', review: 'needed' },
       '2026-10-27',
     )[0].service_name,
     'Amazon',
@@ -110,6 +110,7 @@ test('全半角・大文字小文字を吸収し、複数条件を組み合わ�
     filterAccounts(rows, { search: 'GitHub', category: '買い物' }).length,
     0,
   );
+  assert.equal(filterAccounts(rows, { search: '有料' }).length, 0);
 });
 
 test('保存対象をホワイトリスト化し、空の点検日はnullにする', () => {
@@ -118,10 +119,12 @@ test('保存対象をホワイトリスト化し、空の点検日はnullにす�
     last_reviewed_on: '',
     id: 'id',
     user_id: 'other',
+    billing: '有料',
     unexpected: 'value',
   });
   assert.equal('id' in payload, false);
   assert.equal('user_id' in payload, false);
+  assert.equal('billing' in payload, false);
   assert.equal('unexpected' in payload, false);
   assert.equal(payload.last_reviewed_on, null);
 });

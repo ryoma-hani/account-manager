@@ -1,4 +1,4 @@
-import * as ledger from './utils/ledger.js?v=2';
+import * as ledger from './utils/ledger.js?v=3';
 import * as optionsConfig from './config/options.js';
 import * as storageLinksConfig from './config/storage-links.js';
 

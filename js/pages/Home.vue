@@ -20,7 +20,7 @@
     <div class="summary-grid">
       <button
         class="summary-card"
-        :class="{ selected: !filters.review && !filters.billing }"
+        :class="{ selected: !filters.review }"
         @click="selectMetric('all')"
       >
         <span class="summary-icon mint"
@@ -47,20 +47,6 @@
         ><span v-if="!unavailable && reviewCount" class="summary-hint"
           >要点検</span
         >
-      </button>
-      <button
-        class="summary-card"
-        :class="{ selected: filters.billing === '有料' }"
-        @click="selectMetric('paid')"
-      >
-        <span class="summary-icon lavender"
-          ><app-icon name="wallet" :size="22" /></span
-        ><span class="summary-copy"
-          ><span>有料サービス</span
-          ><strong
-            >{{ unavailable ? '—' : paidCount }}<small>件</small></strong
-          ></span
-        ><app-icon class="summary-arrow" name="chevron" :size="17" />
       </button>
     </div>
 
@@ -135,17 +121,9 @@
       </div>
       <template v-else>
         <div class="results-bar">
-          <span
-            ><strong>{{ visibleAccounts.length }}</strong> 件を表示<span
-              v-if="filters.billing"
-              class="applied-filter"
-              >{{ filters.billing
-              }}<button
-                aria-label="課金区分の絞り込みを解除"
-                @click="filters.billing = ''"
-              >
-                <app-icon name="close" :size="13" /></button></span
-            ><button
+          <span>
+            <strong>{{ visibleAccounts.length }}</strong> 件を表示
+            <button
               v-if="hasFilters"
               class="text-button reset-filters"
               @click="resetFilters"
@@ -207,8 +185,6 @@
                       {{ account.service_name }}</button
                     ><span class="service-meta"
                       ><span>{{ account.category || '未分類' }}</span
-                      ><span v-if="account.billing === '有料'" class="paid-dot"
-                        >有料</span
                       ><a
                         v-if="safeUrl(account.login_url)"
                         :href="safeUrl(account.login_url)"
@@ -411,7 +387,7 @@ export default {
   },
   emits: ['create', 'edit', 'delete', 'review', 'retry', 'copy'],
   data: () => ({
-    filters: { search: '', category: '', status: '', review: '', billing: '' },
+    filters: { search: '', category: '', status: '', review: '' },
     sort: 'updated',
     today: todayString(),
     clock: null,
@@ -424,10 +400,6 @@ export default {
       return this.accounts.filter(
         (account) => reviewStatus(account, this.today).needsReview,
       ).length;
-    },
-    paidCount() {
-      return this.accounts.filter((account) => account.billing === '有料')
-        .length;
     },
     categories() {
       return [
@@ -500,13 +472,11 @@ export default {
         category: '',
         status: '',
         review: '',
-        billing: '',
       };
     },
     selectMetric(metric) {
       this.resetFilters();
       if (metric === 'review') this.filters.review = 'needed';
-      if (metric === 'paid') this.filters.billing = '有料';
     },
     avatarColor(account) {
       const colors = ['mint', 'violet', 'blue', 'amber', 'rose', 'slate'];

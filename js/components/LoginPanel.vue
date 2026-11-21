@@ -35,10 +35,9 @@
           <div class="preview-card">
             <span class="service-avatar amber">S</span>
             <div>
-              <strong>毎日のサブスク</strong
+              <strong>よく使うアプリ</strong
               ><span>保管場所：iCloudキーチェーン</span>
             </div>
-            <span class="badge badge-neutral">有料</span>
           </div>
         </div>
       </div>

@@ -1,9 +1,9 @@
 import { supabase } from './supabase.js';
-import { accountPayload } from '../utils/ledger.js';
+import { accountPayload } from '../utils/ledger.js?v=3';
 import { normalizeOptions } from '../config/options.js';
 
 const fields =
-  'id,user_id,service_name,login_url,login_id,registered_email,storage_location,storage_item,two_factor,category,status,billing,last_reviewed_on,notes,created_at,updated_at';
+  'id,user_id,service_name,login_url,login_id,registered_email,storage_location,storage_item,two_factor,category,status,last_reviewed_on,notes,created_at,updated_at';
 
 export async function listAccounts(userId) {
   const result = [];
