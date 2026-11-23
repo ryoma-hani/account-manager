@@ -32,7 +32,13 @@
           ></span
         ><app-icon class="summary-arrow" name="chevron" :size="17" />
       </button>
-      <div class="summary-card" :class="{ selected: filters.storage !== null }">
+      <button
+        type="button"
+        class="summary-card"
+        :class="{ selected: !filters.review && filters.storage !== null }"
+        title="見直しの絞り込みを解除"
+        @click="filters.review = ''"
+      >
         <span class="summary-icon violet"
           ><app-icon name="lock" :size="22" /></span
         ><span class="summary-copy" aria-live="polite" aria-atomic="true">
@@ -40,8 +46,8 @@
           <strong
             >{{ unavailable ? '—' : storageAccounts.length }}<small>件</small></strong
           >
-        </span>
-      </div>
+        </span><app-icon class="summary-arrow" name="chevron" :size="17" />
+      </button>
       <button
         class="summary-card"
         :class="{ selected: filters.review === 'needed' }"
