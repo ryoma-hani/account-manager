@@ -592,12 +592,16 @@ button.summary-card:hover {
   border-radius: 4px;
   padding: 1px 5px;
 }
-.storage-filter {
+.storage-filter,
+.access-filter {
   font-size: 10px;
   width: min(100%, 248px);
   min-width: 0;
   height: 40px;
   border-color: #e7ece8;
+}
+.access-filter {
+  width: min(100%, 174px);
 }
 .category-row {
   border-bottom: 1px solid var(--line);
@@ -736,6 +740,34 @@ button.summary-card:hover {
 }
 .url-cell a:hover {
   text-decoration: underline;
+}
+.mobile-app-label {
+  display: inline-block;
+  margin-top: 4px;
+  color: #536b5b;
+  font-size: 10px;
+}
+.url-cell .mobile-app-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 28px;
+  font-size: 11px;
+}
+.mobile-app-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  color: #344c3f;
+}
+.mobile-app-checkbox input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: var(--green);
 }
 .category-cell {
   color: #536b5b;
@@ -2043,8 +2075,12 @@ dialog::backdrop {
   .search-field input {
     font-size: 11px;
   }
-  .storage-filter {
+  .storage-filter,
+  .access-filter {
     width: 100%;
+  }
+  .url-cell .mobile-app-link {
+    min-height: 44px;
   }
   .category-row {
     padding: 0 16px;

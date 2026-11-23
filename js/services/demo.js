@@ -1,4 +1,4 @@
-import { blankAccount, todayString } from '../utils/ledger.js?v=3';
+import { blankAccount, todayString } from '../utils/ledger.js?v=4';
 
 function daysAgo(days) {
   const date = new Date();
@@ -103,7 +103,8 @@ export function demoAccounts() {
       two_factor,
       status,
       storage_item,
-      login_url: 'https://example.com/login',
+      login_url: service_name === 'サンプルSNS' ? '' : 'https://example.com/login',
+      has_mobile_app: ['Notion', 'Amazon', 'Netflix', 'サンプルSNS'].includes(service_name),
       login_id: index === 1 ? 'sample-user' : 'sample@example.com',
       registered_email: 'sample@example.com',
       last_reviewed_on: days === null ? null : daysAgo(days),

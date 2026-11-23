@@ -20,7 +20,7 @@
     <div class="summary-grid">
       <button
         class="summary-card"
-        :class="{ selected: !filters.review && filters.storage === null }"
+        :class="{ selected: !hasFilters }"
         @click="resetFilters"
       >
         <span class="summary-icon mint"
@@ -103,6 +103,12 @@
           </option>
           <option value="">保管場所未設定</option>
         </select>
+        <select v-model="filters.access" class="access-filter" aria-label="利用方法で絞り込み">
+          <option value="">すべての利用方法</option>
+          <option value="web">Web（URLあり）</option>
+          <option value="app">スマホアプリ対応</option>
+          <option value="app-only">アプリのみ（URLなし）</option>
+        </select>
       </div>
       <div class="category-row">
         <div class="category-tabs" aria-label="カテゴリで絞り込み">
@@ -111,7 +117,7 @@
             :aria-pressed="!filters.category"
             @click="filters.category = ''"
           >
-            すべて<span>{{ storageAccounts.length }}</span></button
+            すべて<span>{{ scopedAccounts.length }}</span></button
           ><button
             v-for="category in categories"
             :key="category"
@@ -178,7 +184,7 @@
               <tr>
                 <th scope="col">サービス</th>
                 <th scope="col">ログインID</th>
-                <th scope="col">ログインURL</th>
+                <th scope="col">ログインURL・アプリ</th>
                 <th scope="col">カテゴリ</th>
                 <th scope="col">パスワードの保管場所</th>
                 <th scope="col">2段階認証</th>
@@ -237,7 +243,7 @@
                     >{{ account.registered_email }}</span
                   >
                 </td>
-                <td class="url-cell" data-label="ログインURL">
+                <td class="url-cell" data-label="ログインURL・アプリ">
                   <a
                     v-if="safeUrl(account.login_url)"
                     :href="safeUrl(account.login_url)"
@@ -246,7 +252,17 @@
                     :title="safeUrl(account.login_url)"
                     :aria-label="account.service_name + 'のログインURLを開く'"
                   >{{ safeUrl(account.login_url) }}</a>
-                  <span v-else class="missing-value">未設定</span>
+                  <span v-else-if="!account.has_mobile_app" class="missing-value">未設定</span>
+                  <span v-if="account.has_mobile_app" class="mobile-app-label">
+                    {{ safeUrl(account.login_url) ? 'スマホアプリ対応' : 'アプリのみ' }}
+                  </span>
+                  <a
+                    v-if="mobileAppUrls.get(account.id)"
+                    class="mobile-app-link"
+                    :href="mobileAppUrls.get(account.id)"
+                    :aria-label="account.service_name + 'をアプリで開く'"
+                    referrerpolicy="no-referrer"
+                  >アプリで開く<app-icon name="external" :size="12" /></a>
                 </td>
                 <td class="category-cell" data-label="カテゴリ">
                   {{ account.category || '未分類' }}
@@ -360,14 +376,20 @@
 
 <script>
 import AppIcon from '../components/AppIcon.vue';
+import { verifiedMobileAppUrl } from '../config/mobile-app-links.js';
 import { storageLinks } from '../config/storage-links.js';
 import {
   reviewStatus,
   filterAccounts,
+  matchesAccessMethod,
   safeUrl,
   displayDate,
   todayString,
 } from '../utils/ledger.js';
+
+function defaultFilters() {
+  return { search: '', category: '', storage: null, access: '', review: '' };
+}
 
 function displayTwoFactor(value = '') {
   const raw = String(value ?? '');
@@ -393,7 +415,7 @@ export default {
   },
   emits: ['create', 'edit', 'delete', 'review', 'retry', 'copy'],
   data: () => ({
-    filters: { search: '', category: '', storage: null, review: '' },
+    filters: defaultFilters(),
     sort: 'updated',
     today: todayString(),
     clock: null,
@@ -403,7 +425,7 @@ export default {
       return this.loading || !!this.loadError;
     },
     reviewCount() {
-      return this.storageAccounts.filter(
+      return this.scopedAccounts.filter(
         (account) => reviewStatus(account, this.today).needsReview,
       ).length;
     },
@@ -434,11 +456,22 @@ export default {
         (account) => (account.storage_location?.trim() ?? '') === this.filters.storage,
       );
     },
+    scopedAccounts() {
+      if (!this.filters.access) return this.storageAccounts;
+      return this.storageAccounts.filter((account) =>
+        matchesAccessMethod(account, this.filters.access),
+      );
+    },
+    mobileAppUrls() {
+      return new Map(this.accounts.map((account) => [
+        account.id, verifiedMobileAppUrl(account, navigator),
+      ]));
+    },
     hasFilters() {
       return this.filters.storage !== null || Object.values(this.filters).some(Boolean);
     },
     visibleAccounts() {
-      return filterAccounts(this.storageAccounts, this.filters, this.today).sort(
+      return filterAccounts(this.scopedAccounts, this.filters, this.today).sort(
         (a, b) => {
           if (this.sort === 'review') {
             const difference =
@@ -480,16 +513,11 @@ export default {
       return reviewStatus(account, this.today);
     },
     categoryCount(category) {
-      return this.storageAccounts.filter((account) => account.category === category)
+      return this.scopedAccounts.filter((account) => account.category === category)
         .length;
     },
     resetFilters() {
-      this.filters = {
-        search: '',
-        category: '',
-        storage: null,
-        review: '',
-      };
+      this.filters = defaultFilters();
     },
     showStorageReviews() {
       this.filters.search = '';

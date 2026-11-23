@@ -5,6 +5,7 @@ import {
   dateDay,
   displayDate,
   filterAccounts,
+  matchesAccessMethod,
   safeUrl,
   validateAccount,
   blankAccount,
@@ -127,6 +128,20 @@ test('保存対象をホワイトリスト化し、空の点検日はnullにす�
   assert.equal('billing' in payload, false);
   assert.equal('unexpected' in payload, false);
   assert.equal(payload.last_reviewed_on, null);
+  assert.equal(payload.has_mobile_app, false);
+  assert.equal(accountPayload({ ...account, has_mobile_app: true }).has_mobile_app, true);
+});
+
+test('Webとアプリの併用は両方に含め、アプリのみはURLなしに限定する', () => {
+  const web = { ...account, login_url: 'https://example.com/login' };
+  const app = { ...account, has_mobile_app: true };
+  const both = { ...web, has_mobile_app: true };
+  const rows = [web, app, both];
+  assert.deepEqual(rows.filter((row) => matchesAccessMethod(row, 'web')), [web, both]);
+  assert.deepEqual(rows.filter((row) => matchesAccessMethod(row, 'app')), [app, both]);
+  assert.deepEqual(rows.filter((row) => matchesAccessMethod(row, 'app-only')), [app]);
+  assert.equal(matchesAccessMethod(account, 'app'), false);
+  assert.equal(matchesAccessMethod({ ...app, login_url: 'javascript:alert(1)' }, 'web'), false);
 });
 
 test('選択肢から削除しても既存の値を編集でき、初期値の参照を共有しない', () => {

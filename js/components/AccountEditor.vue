@@ -49,6 +49,10 @@
                 placeholder="https://example.com/login"
                 maxlength="2048"
             /></label>
+            <label class="field-wide mobile-app-checkbox">
+              <input v-model="form.has_mobile_app" type="checkbox" />
+              <span>スマホアプリで利用できる</span>
+            </label>
             <label class="field" for="account-login-id"
               ><span>ログインID</span
               ><input

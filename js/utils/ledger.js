@@ -54,6 +54,14 @@ export function displayHost(value) {
   return url ? new URL(url).hostname.replace(/^www\./, '') : '';
 }
 
+export function matchesAccessMethod(account, method) {
+  const hasApp = account.has_mobile_app === true;
+  if (method === 'app') return hasApp;
+  if (method === 'web') return !!safeUrl(account.login_url);
+  if (method === 'app-only') return hasApp && !safeUrl(account.login_url);
+  return true;
+}
+
 export function displayDate(value) {
   if (!value) return '未設定';
   // 点検日はそのまま、DBのタイムスタンプは利用端末の日付に変換する。
@@ -70,6 +78,7 @@ export function blankAccount() {
   return {
     service_name: '',
     login_url: '',
+    has_mobile_app: false,
     login_id: '',
     registered_email: '',
     storage_location: '',
@@ -86,7 +95,7 @@ export function accountPayload(account) {
   const payload = Object.fromEntries(
     Object.keys(blankAccount()).map((key) => [
       key,
-      String(account[key] ?? '').trim(),
+      key === 'has_mobile_app' ? account[key] === true : String(account[key] ?? '').trim(),
     ]),
   );
   payload.last_reviewed_on = payload.last_reviewed_on || null;
@@ -129,6 +138,7 @@ export function filterAccounts(accounts, filters, today = todayString()) {
     if (filters.review === 'ok' && review.needsReview) return false;
     const searchableAccount = accountPayload(account);
     delete searchableAccount.storage_item;
+    delete searchableAccount.has_mobile_app;
     const text = Object.values(searchableAccount)
       .join(' ')
       .normalize('NFKC')
