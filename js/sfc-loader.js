@@ -1,7 +1,7 @@
 import * as ledger from './utils/ledger.js?v=4';
 import * as optionsConfig from './config/options.js';
 import * as storageLinksConfig from './config/storage-links.js';
-import * as mobileAppLinks from './config/mobile-app-links.js?v=1';
+import * as mobileAppLinks from './config/mobile-app-links.js?v=2';
 import * as auth from './services/auth.js?v=2';
 
 const base = new URL('../', import.meta.url);

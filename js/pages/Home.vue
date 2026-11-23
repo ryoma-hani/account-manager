@@ -257,12 +257,12 @@
                     {{ safeUrl(account.login_url) ? 'スマホアプリ対応' : 'アプリのみ' }}
                   </span>
                   <a
-                    v-if="mobileAppUrls.get(account.id)"
+                    v-if="mobileAppLinks.get(account.id)"
                     class="mobile-app-link"
-                    :href="mobileAppUrls.get(account.id)"
-                    :aria-label="account.service_name + 'をアプリで開く'"
+                    :href="mobileAppLinks.get(account.id).url"
+                    :aria-label="account.service_name + 'を' + mobileAppLinks.get(account.id).label"
                     referrerpolicy="no-referrer"
-                  >アプリで開く<app-icon name="external" :size="12" /></a>
+                  >{{ mobileAppLinks.get(account.id).label }}<app-icon name="external" :size="12" /></a>
                 </td>
                 <td class="category-cell" data-label="カテゴリ">
                   {{ account.category || '未分類' }}
@@ -376,7 +376,7 @@
 
 <script>
 import AppIcon from '../components/AppIcon.vue';
-import { verifiedMobileAppUrl } from '../config/mobile-app-links.js';
+import { verifiedMobileAppLink } from '../config/mobile-app-links.js';
 import { storageLinks } from '../config/storage-links.js';
 import {
   reviewStatus,
@@ -462,9 +462,9 @@ export default {
         matchesAccessMethod(account, this.filters.access),
       );
     },
-    mobileAppUrls() {
+    mobileAppLinks() {
       return new Map(this.accounts.map((account) => [
-        account.id, verifiedMobileAppUrl(account, navigator),
+        account.id, verifiedMobileAppLink(account, navigator),
       ]));
     },
     hasFilters() {

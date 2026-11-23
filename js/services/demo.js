@@ -9,6 +9,15 @@ function daysAgo(days) {
 export function demoAccounts() {
   const examples = [
     [
+      'はま寿司',
+      '生活',
+      '',
+      '',
+      '利用中',
+      null,
+      '',
+    ],
+    [
       'Notion',
       '仕事',
       '1Password',
@@ -103,9 +112,11 @@ export function demoAccounts() {
       two_factor,
       status,
       storage_item,
-      login_url: service_name === 'サンプルSNS' ? '' : 'https://example.com/login',
-      has_mobile_app: ['Notion', 'Amazon', 'Netflix', 'サンプルSNS'].includes(service_name),
-      login_id: index === 1 ? 'sample-user' : 'sample@example.com',
+      login_url: service_name === 'はま寿司'
+        ? 'https://my.hama-sushi.co.jp/'
+        : service_name === 'サンプルSNS' ? '' : 'https://example.com/login',
+      has_mobile_app: ['Notion', 'Amazon', 'Netflix', 'サンプルSNS', 'はま寿司'].includes(service_name),
+      login_id: service_name === 'GitHub' ? 'sample-user' : 'sample@example.com',
       registered_email: 'sample@example.com',
       last_reviewed_on: days === null ? null : daysAgo(days),
       notes: '表示確認用の架空のデータです。',
