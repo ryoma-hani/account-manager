@@ -21,7 +21,7 @@
       <button
         class="summary-card"
         :class="{ selected: !filters.review && filters.storage === null }"
-        @click="selectMetric('all')"
+        @click="resetFilters"
       >
         <span class="summary-icon mint"
           ><app-icon name="book" :size="22" /></span
@@ -45,11 +45,11 @@
       <button
         class="summary-card"
         :class="{ selected: filters.review === 'needed' }"
-        @click="selectMetric('review')"
+        @click="showStorageReviews"
       >
         <span class="summary-icon sand"
           ><app-icon name="shield" :size="22" /></span
-        ><span class="summary-copy"
+        ><span class="summary-copy" aria-live="polite" aria-atomic="true"
           ><span>見直しが必要</span
           ><strong
             >{{ unavailable ? '—' : reviewCount }}<small>件</small></strong
@@ -397,7 +397,7 @@ export default {
       return this.loading || !!this.loadError;
     },
     reviewCount() {
-      return this.accounts.filter(
+      return this.storageAccounts.filter(
         (account) => reviewStatus(account, this.today).needsReview,
       ).length;
     },
@@ -485,9 +485,10 @@ export default {
         review: '',
       };
     },
-    selectMetric(metric) {
-      this.resetFilters();
-      if (metric === 'review') this.filters.review = 'needed';
+    showStorageReviews() {
+      this.filters.search = '';
+      this.filters.category = '';
+      this.filters.review = 'needed';
     },
     avatarColor(account) {
       const colors = ['mint', 'violet', 'blue', 'amber', 'rose', 'slate'];
