@@ -1652,6 +1652,44 @@ dialog::backdrop {
   grid-column: 1 / -1;
   justify-self: start;
 }
+.mfa-controls {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  justify-items: start;
+}
+.mfa-controls .field {
+  max-width: 180px;
+}
+.mfa-controls .field input,
+#login-factor {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  font: inherit;
+  font-size: 16px;
+}
+.mfa-qr {
+  display: block;
+  background: #fff;
+  max-width: 100%;
+  height: auto;
+  padding: 8px;
+}
+.mfa-setup-key {
+  overflow-wrap: anywhere;
+}
+.mfa-factors {
+  margin: 0;
+  padding-left: 20px;
+}
+.mfa-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
 .options-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

@@ -19,8 +19,8 @@ try {
     { demoAccounts },
     { popularSites, suggestSiteCategory },
   ] = await Promise.all([
-    import('./sfc-loader.js?v=3'),
-    import('./services/auth.js'),
+    import('./sfc-loader.js?v=4'),
+    import('./services/auth.js?v=2'),
     import('./services/accounts.js?v=2'),
     import('./services/supabase.js'),
     import('./utils/ledger.js?v=3'),
@@ -32,6 +32,7 @@ try {
   const component = (path) => defineAsyncComponent(() => loadSfc(path));
   let noticeTimer;
   let dataGeneration = 0;
+  let authGeneration = 0;
   let unsubscribe;
   const app = createApp({
     components: {
@@ -48,6 +49,9 @@ try {
     data: () => ({
       booting: true,
       session: null,
+      workspaceReady: false,
+      secondFactors: [],
+      authCheckError: '',
       isDemo: false,
       view: 'home',
       sidebarOpen: true,
@@ -79,29 +83,68 @@ try {
       },
     },
     mounted() {
-      unsubscribe = auth.onSessionChange((event, session) => {
-        if (this.isDemo && !session) {
-          this.booting = false;
-          return;
-        }
-        const previousId = this.session?.user.id;
-        this.session = session;
-        this.booting = false;
-        if (session?.user.id !== previousId) {
-          this.resetWorkspace();
-          if (session) {
-            this.isDemo = false;
-            this.loadAccounts();
-          }
-        }
-      });
+      unsubscribe = auth.onSessionChange((_event, session) => this.syncSession(session));
     },
     beforeUnmount() {
       unsubscribe?.();
+      authGeneration += 1;
       clearTimeout(noticeTimer);
     },
     methods: {
       suggestSiteCategory,
+      async syncSession(session) {
+        if (this.isDemo && !session) return;
+        const generation = ++authGeneration;
+        if (session?.user.id !== this.session?.user.id) {
+          this.workspaceReady = false;
+          this.secondFactors = [];
+          this.resetWorkspace();
+        }
+        this.session = session;
+        this.authCheckError = '';
+        if (!session) {
+          this.booting = false;
+          return;
+        }
+        this.isDemo = false;
+        this.booting = !this.workspaceReady && !this.secondFactors.length;
+        try {
+          const factors = await auth.readSecondFactor(session.access_token);
+          if (generation !== authGeneration) return;
+          if (factors !== null) {
+            if (this.workspaceReady) this.resetWorkspace();
+            this.workspaceReady = false;
+            this.secondFactors = factors;
+            if (!factors.length)
+              this.authCheckError = '利用できる認証アプリがありません。管理者にご確認ください。';
+          } else {
+            const needsLoad = !this.workspaceReady;
+            this.secondFactors = [];
+            this.workspaceReady = true;
+            if (needsLoad) this.loadAccounts();
+          }
+        } catch (error) {
+          if (generation !== authGeneration) return;
+          if (this.workspaceReady) this.resetWorkspace();
+          this.workspaceReady = false;
+          this.secondFactors = [];
+          this.authCheckError = errorMessage(error);
+        } finally {
+          if (generation === authGeneration) this.booting = false;
+        }
+      },
+      async verifyLogin({ factorId, code }) {
+        if (this.authBusy || !this.secondFactors.some(({ id }) => id === factorId)) return;
+        this.authBusy = true;
+        this.authError = '';
+        try {
+          await auth.verifySecondFactor(factorId, code);
+        } catch (error) {
+          this.authError = auth.secondFactorErrorMessage(error);
+        } finally {
+          this.authBusy = false;
+        }
+      },
       notify(message, kind = 'success') {
         clearTimeout(noticeTimer);
         this.notice = { message, kind };
@@ -152,7 +195,7 @@ try {
         try {
           if (!this.isDemo) await auth.signOut();
           this.isDemo = false;
-          this.session = null;
+          this.syncSession(null);
           this.resetWorkspace();
           this.authError = '';
         } catch (error) {
@@ -162,7 +205,7 @@ try {
         }
       },
       async loadAccounts() {
-        if (!this.session || this.isDemo) return;
+        if (!this.workspaceReady || !this.session || this.isDemo) return;
         const generation = ++dataGeneration;
         const userId = this.session.user.id;
         this.loading = true;

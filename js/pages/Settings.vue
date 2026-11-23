@@ -133,6 +133,7 @@
           </button>
         </form>
       </section>
+      <mfa-settings v-if="active" :is-demo="isDemo" />
       <section class="settings-panel review-guide">
         <span class="summary-icon sand"
           ><app-icon name="clock" :size="22"
@@ -157,12 +158,14 @@
 </template>
 <script>
 import AppIcon from '../components/AppIcon.vue';
+import MfaSettings from '../components/MfaSettings.vue';
 import { optionFields, freshOptions } from '../config/options.js';
 export default {
-  components: { AppIcon },
+  components: { AppIcon, MfaSettings },
   props: {
     options: { type: Object, required: true },
     accounts: Array,
+    active: Boolean,
     loading: Boolean,
     saving: Boolean,
     loadError: String,

@@ -1,6 +1,7 @@
 import * as ledger from './utils/ledger.js?v=3';
 import * as optionsConfig from './config/options.js';
 import * as storageLinksConfig from './config/storage-links.js';
+import * as auth from './services/auth.js?v=2';
 
 const base = new URL('../', import.meta.url);
 const moduleCache = Object.assign(Object.create(null), {
@@ -9,6 +10,7 @@ const moduleCache = Object.assign(Object.create(null), {
   [new URL('./config/options.js', import.meta.url).href]: optionsConfig,
   [new URL('./config/storage-links.js', import.meta.url).href]:
     storageLinksConfig,
+  [new URL('./services/auth.js', import.meta.url).href]: auth,
 });
 
 const options = {

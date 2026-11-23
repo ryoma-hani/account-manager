@@ -10,7 +10,7 @@
     />
     <title>アカウント台帳</title>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./css/style.css?v=7" />
+    <link rel="stylesheet" href="./css/style.css?v=8" />
     <script
       defer
       src="https://cdn.jsdelivr.net/npm/vue@3.5.44/dist/vue.global.prod.js"
@@ -23,7 +23,7 @@
       defer
       src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"
     ></script>
-    <script type="module" src="./js/app.js?v=4"></script>
+    <script type="module" src="./js/app.js?v=5"></script>
   </head>
   <body>
     <div id="boot-status" class="boot-status" role="status">
@@ -42,10 +42,16 @@
         ログイン状態を確認しています…
       </div>
       <login-panel
-        v-else-if="!session && !isDemo"
+        v-else-if="!workspaceReady && !isDemo"
         :busy="authBusy"
         :error="authError"
+        :checking-second-factor="!!session"
+        :auth-check-error="authCheckError"
+        :factors="secondFactors"
         @login="login"
+        @verify="verifyLogin"
+        @retry="syncSession(session)"
+        @logout="logout"
         @demo="startDemo"
       ></login-panel>
       <div v-else class="app-shell" :class="{ 'sidebar-closed': !sidebarOpen }">
@@ -159,6 +165,7 @@
           ></home-page>
           <settings-page
             v-show="view === 'settings'"
+            :active="view === 'settings'"
             :options="options"
             :accounts="accounts"
             :loading="loading"
