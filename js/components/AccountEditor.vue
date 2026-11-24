@@ -180,7 +180,7 @@
                 サイトからの候補：{{ suggestedCategory }}
               </small>
             </label>
-            <label class="field" for="account-status"
+            <label v-if="showStatusField" class="field" for="account-status"
               ><span>状態</span
               ><select id="account-status" v-model="form.status">
                 <option value="">未設定</option>
@@ -308,6 +308,8 @@ export default {
         last_reviewed_on: this.account?.last_reviewed_on ?? '',
         two_factor: parsed.method,
       },
+      // 入力欄を再表示するときは true にする。保存済みの状態は form に引き継ぐ。
+      showStatusField: false,
       categorySelected: false,
       authenticatorApps,
       twoFactorPhoneLineId: matchingLine?.id ?? '',
