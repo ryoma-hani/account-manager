@@ -692,7 +692,7 @@ button.summary-card:hover {
   border-bottom: 1px solid var(--line);
 }
 .accounts-table th:first-child {
-  width: 15%;
+  width: 24%;
   padding-left: 23px;
 }
 .accounts-table th:nth-child(2) {
@@ -709,9 +709,6 @@ button.summary-card:hover {
 }
 .accounts-table th:nth-child(6) {
   width: 13%;
-}
-.accounts-table th:nth-child(7) {
-  width: 9%;
 }
 .accounts-table th:last-child {
   width: 9%;
@@ -800,9 +797,9 @@ button.summary-card:hover {
   font-size: 13px;
   font-weight: 650;
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
   color: #3b5043;
 }
 .service-name:hover {
@@ -2169,20 +2166,6 @@ dialog::backdrop {
   }
   .accounts-table .factor-cell {
     grid-column: 1 / -1;
-  }
-  .accounts-table .review-cell {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    padding-top: 3px;
-  }
-  .accounts-table .review-cell::before {
-    margin: 0;
-  }
-  .review-cell .cell-secondary {
-    margin: 0;
-    font-size: 9px;
   }
   .actions-cell {
     grid-column: 1 / -1;

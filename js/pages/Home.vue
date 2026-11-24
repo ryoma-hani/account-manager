@@ -188,7 +188,6 @@
                 <th scope="col">カテゴリ</th>
                 <th scope="col">パスワードの保管場所</th>
                 <th scope="col">2段階認証</th>
-                <th scope="col">パス更新日</th>
                 <th scope="col"><span class="sr-only">操作</span></th>
               </tr>
             </thead>
@@ -306,21 +305,6 @@
                     />{{ twoFactorLabel(account) }}</span
                   >
                   <span v-if="account.passkey_location" class="cell-secondary passkey-location">パスキーの保管先：{{ account.passkey_location }}</span>
-                </td>
-                <td class="review-cell" data-label="パス更新日">
-                  <span
-                    class="badge"
-                    :class="'badge-' + reviewFor(account).tone"
-                    ><app-icon
-                      v-if="reviewFor(account).label === 'OK'"
-                      name="check"
-                      :size="12"
-                    /><span>{{ reviewFor(account).label }}</span></span
-                  ><span class="cell-secondary">{{
-                    account.last_reviewed_on
-                      ? displayDate(account.last_reviewed_on)
-                      : '日付の記録なし'
-                  }}</span>
                 </td>
                 <td class="actions-cell">
                   <button
@@ -509,9 +493,6 @@ export default {
     },
     twoFactorLabel(account) {
       return displayTwoFactor(account.two_factor) || '未設定・未確認';
-    },
-    reviewFor(account) {
-      return reviewStatus(account, this.today);
     },
     categoryCount(category) {
       return this.scopedAccounts.filter((account) => account.category === category)
