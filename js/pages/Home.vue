@@ -305,6 +305,7 @@
                       :size="14"
                     />{{ twoFactorLabel(account) }}</span
                   >
+                  <span v-if="account.passkey_location" class="cell-secondary passkey-location">パスキーの保管先：{{ account.passkey_location }}</span>
                 </td>
                 <td class="review-cell" data-label="パス更新日">
                   <span
@@ -507,7 +508,7 @@ export default {
         : null;
     },
     twoFactorLabel(account) {
-      return displayTwoFactor(account.two_factor) || '未設定';
+      return displayTwoFactor(account.two_factor) || '未設定・未確認';
     },
     reviewFor(account) {
       return reviewStatus(account, this.today);

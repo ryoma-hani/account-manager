@@ -900,6 +900,10 @@ button.summary-card:hover {
 .factor-label > svg {
   flex-shrink: 0;
 }
+.passkey-location {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
 .factor-missing {
   color: #b8a281;
 }

@@ -74,7 +74,7 @@
           </div>
         </fieldset>
         <fieldset :disabled="saving">
-          <legend>パスワードの保管先</legend>
+          <legend>保管先と認証</legend>
           <div class="form-grid">
             <label class="field" for="storage-location"
               ><span>保管場所</span
@@ -88,10 +88,17 @@
                 </option>
               </select></label
             >
+            <label class="field" for="passkey-location">
+              <span>パスキーの保管先</span>
+              <select id="passkey-location" v-model="form.passkey_location">
+                <option value="">未登録</option>
+                <option v-for="value in choices('passkey_location')" :key="value">{{ value }}</option>
+              </select>
+            </label>
             <label class="field" for="two-factor"
               ><span>2段階認証</span
               ><select id="two-factor" v-model="form.two_factor">
-                <option value="">未設定</option>
+                <option value="">未設定・未確認</option>
                 <option v-for="value in choices('two_factor')" :key="value">
                   {{ value }}
                 </option>

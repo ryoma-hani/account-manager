@@ -144,6 +144,17 @@ test('Webとアプリの併用は両方に含め、アプリのみはURLなし�
   assert.equal(matchesAccessMethod({ ...app, login_url: 'javascript:alert(1)' }, 'web'), false);
 });
 
+test('パスキーの保管先はSMSやパスワード保管場所から独立し、既存行は空欄になる', () => {
+  const original = { storage_location: '紙のノート', two_factor: 'SMS' };
+  assert.equal(accountPayload(original).passkey_location, '');
+  const payload = accountPayload({ ...original, passkey_location: ' Bitwarden ' });
+  assert.equal(payload.passkey_location, 'Bitwarden');
+  assert.equal(payload.two_factor, original.two_factor);
+  assert.equal(payload.storage_location, original.storage_location);
+  assert.deepEqual(normalizeOptions({ category: ['仕事'] }).passkey_location,
+    ['iCloudキーチェーン', 'Bitwarden']);
+});
+
 test('選択肢から削除しても既存の値を編集でき、初期値の参照を共有しない', () => {
   const options = normalizeOptions({
     category: ['  個人  ', '個人', '', 42],

@@ -10,6 +10,7 @@ create table if not exists public.accounts (
   login_id text not null default '' check (char_length(login_id) <= 500),
   registered_email text not null default '' check (char_length(registered_email) <= 320),
   storage_location text not null default '' check (char_length(storage_location) <= 100),
+  passkey_location text not null default '' check (char_length(passkey_location) <= 100),
   storage_item text not null default '' check (char_length(storage_item) <= 500),
   two_factor text not null default '' check (char_length(two_factor) <= 100),
   category text not null default '' check (char_length(category) <= 100),

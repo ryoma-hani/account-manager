@@ -1,4 +1,4 @@
-import { safeUrl } from '../utils/ledger.js?v=4';
+import { safeUrl } from '../utils/ledger.js?v=5';
 
 // 実機で起動を確認した公式HTTPSリンクだけを、OS別に登録します。
 // 形式: { '正規のサービス名': { ios: 'https://…', android: 'https://…' } }

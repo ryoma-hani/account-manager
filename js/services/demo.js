@@ -1,4 +1,4 @@
-import { blankAccount, todayString } from '../utils/ledger.js?v=4';
+import { blankAccount, todayString } from '../utils/ledger.js?v=5';
 
 function daysAgo(days) {
   const date = new Date();

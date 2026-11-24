@@ -82,6 +82,7 @@ export function blankAccount() {
     login_id: '',
     registered_email: '',
     storage_location: '',
+    passkey_location: '',
     storage_item: '',
     two_factor: '',
     category: '',

@@ -5,6 +5,11 @@ export const optionFields = Object.freeze([
     description: 'パスワードを保管しているアプリや場所',
   },
   {
+    key: 'passkey_location',
+    label: 'パスキーの保管先',
+    description: 'サービスのパスキーを保存したアプリや場所',
+  },
+  {
     key: 'two_factor',
     label: '2段階認証',
     description: 'サービスで利用している追加の認証方法',
@@ -27,6 +32,7 @@ export const defaultOptions = Object.freeze({
     '紙のノート',
     'その他',
   ]),
+  passkey_location: Object.freeze(['iCloudキーチェーン', 'Bitwarden']),
   two_factor: Object.freeze([
     'なし',
     'SMS',
